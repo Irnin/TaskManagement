@@ -4,7 +4,6 @@ from utility.logging import Logging
 
 
 class Model:
-
 	def __init__(self):
 		self.app_url = "http://127.0.0.1:8080"
 
@@ -22,6 +21,8 @@ class Model:
 				response = requests.post(url, json=data, headers=headers)
 			elif method.upper() == "PUT":
 				response = requests.put(url, json=data, headers=headers)
+			elif method.upper() == "PATCH":
+				response = requests.patch(url, json=data, headers=headers)
 			elif method.upper() == "DELETE":
 				response = requests.delete(url, headers=headers)
 			else:

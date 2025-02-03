@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from PIL import Image, ImageTk, ImageDraw, ImageColor
 
 from views.board_view import BoardView
+from views.category_view import CategoryView
 from views.task_view import TasksView
 
 class View(tk.Tk):
@@ -38,6 +39,11 @@ class View(tk.Tk):
         tasks_button = self.icon_button(self.top_bar, "key.png", "Tasks")
         tasks_button.configure(command=self.show_tasks_view)
         tasks_button.pack(side="left")
+
+        self.category_button = self.icon_button(self.top_bar, "key.png", "Category")
+        self.category_button.configure(command=lambda: self.controller.show_categories())
+        self.category_button.pack(side="left")
+        self.category_button.config(state="disabled")
 
     def login(self):
         self.login_window = tk.Toplevel(self)
@@ -75,6 +81,10 @@ class View(tk.Tk):
 
         login_frame.pack(padx=10, pady=10)
 
+        # === DEBUG ===
+        # Quick login
+        self.handle_login("john.doe@example.com", "Aa444444")
+
     def handle_login(self, email, password):
         if self.controller.login(email, password):
             self.login_window.destroy()
@@ -82,17 +92,22 @@ class View(tk.Tk):
             # Displaying logged user
             logged_user = self.controller.get_user()
 
-            logged_user_label = tk.Label(self.top_bar, text=f"{logged_user.first_name} {logged_user.last_name}", bg="gray", padx=10)
-            logged_user_label.pack(side="right")
+            self.logged_user_label = tk.Label(self.top_bar, text=f"{logged_user.first_name} {logged_user.last_name}", bg="gray", padx=10)
+            self.logged_user_label.pack(side="right")
 
             if logged_user.role == "ADMIN":
-                logged_user_label.configure(foreground="yellow")
+                self.admin_logged()
 
             # Displaying board view
             self.show_board_view()
 
         else:
             tk.messagebox.showwarning("Error", "Invalid credentials")
+
+    def admin_logged(self):
+        self.logged_user_label.configure(foreground="yellow")
+
+        self.category_button.config(state="normal")
 
     def remove_current_view(self):
         """Usuwa obecnie wyświetlany widok."""
@@ -110,6 +125,12 @@ class View(tk.Tk):
         """Ładuje widok zadań."""
         self.remove_current_view()
         self.current_view = TasksView(self)
+        self.current_view.pack(fill="both", expand=True)
+
+    def show_category_view(self, category_frame):
+        """Ładuje widok kategorii."""
+        self.remove_current_view()
+        self.current_view = category_frame
         self.current_view.pack(fill="both", expand=True)
 
     def run(self):
