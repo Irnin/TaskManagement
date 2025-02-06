@@ -7,12 +7,19 @@ class Model:
 	def __init__(self):
 		self.app_url = "http://127.0.0.1:8080"
 
-	def _send_request(self, endpoint, method="GET", data=None, params=None):
+	def _send_request(self, endpoint, method="GET", data=None, params={}, page=None, page_size=None):
 		url = f"{self.app_url}/{endpoint.lstrip('/')}"
 		headers = {"Content-Type": "application/json"}
 
 		if hasattr(self, 'user') and self.user is not None:
 			headers.update({"Authorization": f"Bearer {self.user.token}"})
+
+		if params is None:
+			params = {}
+		if page is not None:
+			params['page'] = page
+		if page_size is not None:
+			params['size'] = page_size
 
 		try:
 			if method.upper() == "GET":
@@ -29,7 +36,7 @@ class Model:
 				raise ValueError(f"Unsupported HTTP method: {method}")
 
 			response.raise_for_status()
-			return response.json()
+			return response
 		except requests.RequestException as e:
 			Logging.log_warning(f"Request failed: {e}")
 			return None
@@ -47,7 +54,7 @@ class Model:
 		)
 
 		if response:
-			token = response.get("token")
+			token = response.json().get("token")
 			self.user = User(token)
 
 			return True
@@ -59,6 +66,8 @@ class Model:
 			endpoint="/api/users/myAccount",
 			method="GET",
 		)
+
+		response = response.json()
 
 		if response:
 			id = response.get("id")

@@ -10,3 +10,11 @@ class CategoryController:
 
 		self.view = CategoryView(self.masterView)
 		self.model = CategoryModel(self.masterModel)
+
+		self.model.fetch_data()
+		categories = self.model.get_categories()
+
+		self.view.insert_categories(categories)
+
+
+

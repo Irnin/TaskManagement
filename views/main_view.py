@@ -99,10 +99,12 @@ class View(tk.Tk):
                 self.admin_logged()
 
             # Displaying board view
-            self.show_board_view()
+            #self.show_board_view()
+
+            self.controller.show_categories()
 
         else:
-            tk.messagebox.showwarning("Error", "Invalid credentials")
+            tk.messagebox.showwarning("Error", "Can not login")
 
     def admin_logged(self):
         self.logged_user_label.configure(foreground="yellow")
@@ -119,19 +121,19 @@ class View(tk.Tk):
         """Ładuje widok tablicy."""
         self.remove_current_view()
         self.current_view = BoardView(self)
-        self.current_view.pack(fill="both", expand=True)
+        self.current_view.pack(fill="both", expand=True, padx=10, pady=10)
 
     def show_tasks_view(self):
         """Ładuje widok zadań."""
         self.remove_current_view()
         self.current_view = TasksView(self)
-        self.current_view.pack(fill="both", expand=True)
+        self.current_view.pack(fill="both", expand=True, padx=10, pady=10)
 
     def show_category_view(self, category_frame):
         """Ładuje widok kategorii."""
         self.remove_current_view()
         self.current_view = category_frame
-        self.current_view.pack(fill="both", expand=True)
+        self.current_view.pack(fill="both", expand=True, padx=10, pady=10)
 
     def run(self):
         self.login()
