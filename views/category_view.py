@@ -3,15 +3,17 @@ from tkinter import ttk
 
 from views.modules.BetterText import BetterText
 from views.modules.PaginatedTableFrame import PaginatedTableFrame
+from views.modules.Panel import Panel
 
-class CategoryView(tk.Frame):
+
+class CategoryView(Panel):
     def __init__(self, parent, controller):
-        super().__init__(parent)
+        super().__init__(parent, "Categories")
 
         self.controller = controller
 
         self.setup_tkinker_variable()
-        self.setup_ui()
+        self.setup_content()
         self.setup_tkinker_events()
 
     def setup_tkinker_variable(self):
@@ -35,14 +37,6 @@ class CategoryView(tk.Frame):
             pass
 
     # GUI
-    def setup_ui(self):
-        self.setup_header()
-        self.setup_content()
-
-    def setup_header(self):
-        tk.Label(self, text="Categories", font=("Helvetica", 20, "bold"), anchor='w').pack(fill='x')
-        ttk.Separator(self, orient='horizontal').pack(fill='x', pady=10)
-
     def setup_content(self):
         content = tk.Frame(self)
         content.pack(fill='both', expand=True)
