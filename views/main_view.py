@@ -40,7 +40,7 @@ class View(tk.Tk):
         tasks_button.configure(command=self.show_tasks_view)
         tasks_button.pack(side="left")
 
-        self.category_button = self.icon_button(self.top_bar, "key.png", "Category")
+        self.category_button = self.icon_button(self.top_bar, "key.png", "Categories")
         self.category_button.configure(command=lambda: self.controller.show_categories())
         self.category_button.pack(side="left")
         self.category_button.config(state="disabled")

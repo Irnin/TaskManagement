@@ -2,8 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 
 class CategoryView(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         super().__init__(parent)
+
+        self.controller = controller
+
         self.setup_tkinker_variable()
         self.setup_ui()
         self.setup_tkinker_events()
@@ -17,15 +20,18 @@ class CategoryView(tk.Frame):
         self.table.table.bind('<<TreeviewSelect>>', self.item_select)
 
     def item_select(self, event):
-        table = self.table.table
-        selected_item = table.selection()[0]
+        try:
+            table = self.table.table
+            selected_item = table.selection()[0]
 
-        self.id.set(table.item(selected_item)['values'][0])
-        self.name.set(table.item(selected_item)['values'][1])
-        self.description.set(table.item(selected_item)['values'][2])
+            self.id.set(table.item(selected_item)['values'][0])
+            self.name.set(table.item(selected_item)['values'][1])
+            self.description.set(table.item(selected_item)['values'][2])
 
-        self.text_widget.delete('1.0', tk.END)
-        self.text_widget.insert(tk.END, table.item(selected_item)['values'][2])
+            self.text_widget.delete('1.0', tk.END)
+            self.text_widget.insert(tk.END, table.item(selected_item)['values'][2])
+        except IndexError:
+            pass
 
     # GUI
     def setup_ui(self):
@@ -67,36 +73,48 @@ class CategoryView(tk.Frame):
         tk.Label(details_frame, text='Description', anchor='w').pack(fill='x')
         self.description_text = self.create_multiline_text(details_frame, self.description).pack(fill='x')
 
+        tk.Label(parent, text="Actions:", font=("Helvetica", 16, "bold"), anchor='w').pack(fill='x', pady=5)
+
+        tk.Button(parent, text='Update', command=self.update_category).pack(fill='x', pady=5)
+
     def create_multiline_text(self, parent, text_var):
         """Creates a multi-line text input with a scrollbar and binding to StringVar."""
-        # Frame for text and scrollbar
         frame = tk.Frame(parent)
 
-        # Text widget
         self.text_widget = tk.Text(frame, height=5, wrap='word', width=30, font=("Helvetica", 12))
         self.text_widget.pack(side='left', fill='both', expand=True)
 
-        # Scrollbar
         scrollbar = tk.Scrollbar(frame, command=self.text_widget.yview)
         scrollbar.pack(side='right', fill='y')
         self.text_widget.config(yscrollcommand=scrollbar.set)
 
-        # Insert initial text
         self.text_widget.insert('1.0', text_var.get())
 
         # Update StringVar on focus out
         def update_text_var(event=None):
             text_var.set(self.text_widget.get('1.0', 'end-1c'))
 
-        self.text_widget.bind('<FocusOut>', update_text_var)
+        self.text_widget.bind('<KeyRelease>', update_text_var)
 
         # Return frame that contains the Text widget
         return frame
 
     # Actions
     def insert_categories(self, categories):
+        self.table.clear_data()
+
         for category in categories:
             self.table.insert_row((category.id, category.name, category.description))
+
+    def update_category(self):
+        id = self.id.get()
+        name = self.name.get()
+        description = self.description.get()
+
+        if not id:
+            return
+
+        self.controller.update_category(id, name, description)
 
 class PaginatedTableFrame(tk.Frame):
     def __init__(self, parent, columns: [str]):

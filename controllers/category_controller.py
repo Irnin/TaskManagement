@@ -8,7 +8,7 @@ class CategoryController:
 		self.masterModel = controller.model
 		self.masterView = controller.view
 
-		self.view = CategoryView(self.masterView)
+		self.view = CategoryView(self.masterView, self)
 		self.model = CategoryModel(self.masterModel)
 
 		self.model.fetch_data()
@@ -16,5 +16,11 @@ class CategoryController:
 
 		self.view.insert_categories(categories)
 
+	def update_category(self, id, name, description):
+		self.model.update_category(id, name, description)
+		self.model.fetch_data()
+
+		categories = self.model.get_categories()
+		self.view.insert_categories(categories)
 
 

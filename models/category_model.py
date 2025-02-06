@@ -43,3 +43,20 @@ class CategoryModel:
 			categories.append(Category(idCat, name, description))
 
 		return categories
+
+	def update_category(self, id, name, description):
+		""" Update category with id with new name and description """
+		request_data = {
+			"idCat": id,
+			"name": name,
+			"description": description
+		}
+
+		print(request_data)
+
+		response = self.masterModel._send_request(f"api/categories/{id}", "PUT", data=request_data)
+
+		if response:
+			return True
+		else:
+			return False
