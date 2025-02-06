@@ -1,9 +1,10 @@
 import tkinter as tk
 
-class TasksView(tk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.setup_ui()
+from views.modules.Panel import Panel
 
-    def setup_ui(self):
-        tk.Label(self, text="Tasks View").pack()
+
+class TaskView(Panel):
+    def __init__(self, parent, controller):
+        super().__init__(parent, "Tasks")
+
+        self.controller = controller

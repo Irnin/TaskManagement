@@ -1,14 +1,19 @@
 import tkinter as tk
 from tkinter import ttk
 
-class CategoryView(tk.Frame):
+from views.modules.BetterText import BetterText
+from views.modules.PaginatedTableFrame import PaginatedTableFrame
+from views.modules.Panel import Panel
+
+
+class CategoryView(Panel):
     def __init__(self, parent, controller):
-        super().__init__(parent)
+        super().__init__(parent, "Categories")
 
         self.controller = controller
 
         self.setup_tkinker_variable()
-        self.setup_ui()
+        self.setup_content()
         self.setup_tkinker_events()
 
     def setup_tkinker_variable(self):
@@ -28,20 +33,10 @@ class CategoryView(tk.Frame):
             self.name.set(table.item(selected_item)['values'][1])
             self.description.set(table.item(selected_item)['values'][2])
 
-            self.text_widget.delete('1.0', tk.END)
-            self.text_widget.insert(tk.END, table.item(selected_item)['values'][2])
         except IndexError:
             pass
 
     # GUI
-    def setup_ui(self):
-        self.setup_header()
-        self.setup_content()
-
-    def setup_header(self):
-        tk.Label(self, text="Categories", font=("Helvetica", 20, "bold"), anchor='w').pack(fill='x')
-        ttk.Separator(self, orient='horizontal').pack(fill='x', pady=10)
-
     def setup_content(self):
         content = tk.Frame(self)
         content.pack(fill='both', expand=True)
@@ -71,33 +66,11 @@ class CategoryView(tk.Frame):
         tk.Entry(details_frame, textvariable=self.name).pack(fill='x')
 
         tk.Label(details_frame, text='Description', anchor='w').pack(fill='x')
-        self.description_text = self.create_multiline_text(details_frame, self.description).pack(fill='x')
+        BetterText(details_frame, textvariable=self.description).pack(fill='x')
 
         tk.Label(parent, text="Actions:", font=("Helvetica", 16, "bold"), anchor='w').pack(fill='x', pady=5)
 
         tk.Button(parent, text='Update', command=self.update_category).pack(fill='x', pady=5)
-
-    def create_multiline_text(self, parent, text_var):
-        """Creates a multi-line text input with a scrollbar and binding to StringVar."""
-        frame = tk.Frame(parent)
-
-        self.text_widget = tk.Text(frame, height=5, wrap='word', width=30, font=("Helvetica", 12))
-        self.text_widget.pack(side='left', fill='both', expand=True)
-
-        scrollbar = tk.Scrollbar(frame, command=self.text_widget.yview)
-        scrollbar.pack(side='right', fill='y')
-        self.text_widget.config(yscrollcommand=scrollbar.set)
-
-        self.text_widget.insert('1.0', text_var.get())
-
-        # Update StringVar on focus out
-        def update_text_var(event=None):
-            text_var.set(self.text_widget.get('1.0', 'end-1c'))
-
-        self.text_widget.bind('<KeyRelease>', update_text_var)
-
-        # Return frame that contains the Text widget
-        return frame
 
     # Actions
     def insert_categories(self, categories):
@@ -115,38 +88,3 @@ class CategoryView(tk.Frame):
             return
 
         self.controller.update_category(id, name, description)
-
-class PaginatedTableFrame(tk.Frame):
-    def __init__(self, parent, columns: [str]):
-        super().__init__(parent)
-        self.setup_ui(columns)
-
-    def setup_ui(self, columns):
-        self.tableFrame = tk.Frame(self)
-        self.tableFrame.columnconfigure((0, 1), weight=1)
-        self.tableFrame.rowconfigure(0, weight=1)
-
-        self.table = ttk.Treeview(self.tableFrame, columns=columns, show='headings', selectmode='browse')
-
-        scrollbar_y = ttk.Scrollbar(self.tableFrame, orient="vertical", command=self.table.yview)
-        self.table.configure(yscrollcommand=scrollbar_y.set)
-
-        for column in columns:
-            self.table.heading(column, text=self._get_heading(column))
-
-        self.table.grid(row=0, column=0, sticky='nsew')
-        scrollbar_y.grid(row=0, column=1, sticky='ns')
-
-        self.tableFrame.pack(fill='both', expand=True)
-
-    def _get_heading(self, title: str):
-        heading = title.upper()
-        heading = heading.replace("_", " ")
-        return heading
-
-    def insert_row(self, data):
-        self.table.insert(parent='', index=tk.END, values=data)
-
-    def clear_data(self):
-        for item in self.table.get_children():
-            self.table.delete(item)

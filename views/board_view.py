@@ -1,10 +1,8 @@
 import tkinter as tk
 
-class BoardView(tk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.setup_ui()
+from views.modules.Panel import Panel
 
-    def setup_ui(self):
-        tk.Label(self, text="Board View").pack()
-        # Możesz tu dodać więcej widgetów dla tablicy zadań
+class BoardView(Panel):
+    def __init__(self, parent, controller):
+        super().__init__(parent, "Board")
+        self.controller = controller
