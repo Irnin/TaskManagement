@@ -3,6 +3,8 @@ import tkinter as tk
 from views.modules.Panel import Panel
 
 
-class TasksView(Panel):
-    def __init__(self, parent):
+class TaskView(Panel):
+    def __init__(self, parent, controller):
         super().__init__(parent, "Tasks")
+
+        self.controller = controller

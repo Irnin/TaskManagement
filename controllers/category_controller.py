@@ -1,7 +1,6 @@
 from models.category_model import CategoryModel
 from views.category_view import CategoryView
 
-
 class CategoryController:
 	def __init__(self, controller):
 		self.masterController = controller

@@ -2,7 +2,6 @@ import requests
 
 from utility.logging import Logging
 
-
 class Category:
 	def __init__(self, id, name, description):
 		self.id = id

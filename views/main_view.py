@@ -1,51 +1,41 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from PIL import Image, ImageTk, ImageDraw, ImageColor
 
-from views.board_view import BoardView
-from views.category_view import CategoryView
-from views.task_view import TasksView
+from views.modules.IconButton import IconButton
+from views.modules.Panel import Panel
 
 class View(tk.Tk):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
+
+        self.top_bar = None
+        self.menu_buttons = None
         self.current_view = None
+
         self.setup_ui()
-
-    def icon_button(self, root, iconName: str, text: str) -> tk.Button:
-        original_image = Image.open(iconName)
-        resized_image = original_image.resize((30, 30))
-        icon = ImageTk.PhotoImage(resized_image)
-
-        button = tk.Button(root, image=icon, text=text, compound="left", pady=5, font=("Arial", 12), borderwidth=0, relief="flat", padx=5)
-        button.image = icon
-
-        return button
 
     def setup_ui(self):
         self.geometry("1000x600")
         self.title("Task Management")
 
-        # Pasek nawigacji
-        self.top_bar = tk.Frame(self, bg="gray")
+        style = ttk.Style()
+        style.theme_use('aqua')
+
+        self.top_bar = tk.Frame(self, bg="#808080")
         self.top_bar.pack(fill='x')
 
-        # Przyciski do przełączania widoków
-        board_button = self.icon_button(self.top_bar, "key.png", "Board")
-        board_button.configure(command=self.show_board_view)
-        board_button.pack(side="left")
+        self.menu_buttons: dict[str, IconButton] = {
+            "board": IconButton(self.top_bar, "key.png", "Board", command=lambda: self.controller.open_page("board")),
+            "tasks": IconButton(self.top_bar, "key.png", "Tasks", command=lambda: self.controller.open_page("tasks")),
+            "categories": IconButton(self.top_bar, "key.png", "Categories", command=lambda: self.controller.open_page("categories"))}
 
-        tasks_button = self.icon_button(self.top_bar, "key.png", "Tasks")
-        tasks_button.configure(command=self.show_tasks_view)
-        tasks_button.pack(side="left")
+        self.menu_buttons["categories"].configure(state="disabled")
 
-        self.category_button = self.icon_button(self.top_bar, "key.png", "Categories")
-        self.category_button.configure(command=lambda: self.controller.show_categories())
-        self.category_button.pack(side="left")
-        self.category_button.config(state="disabled")
+        for button in self.menu_buttons.values():
+            button.pack(side="left")
 
-    def login(self):
+    def open_login_window(self):
         self.login_window = tk.Toplevel(self)
         #self.login_window.geometry("400x200")
 
@@ -98,43 +88,37 @@ class View(tk.Tk):
             if logged_user.role == "ADMIN":
                 self.admin_logged()
 
-            # Displaying board view
-            #self.show_board_view()
-
-            self.controller.show_categories()
+            self.controller.open_page("categories")
 
         else:
             tk.messagebox.showwarning("Error", "Can not login")
 
     def admin_logged(self):
         self.logged_user_label.configure(foreground="yellow")
+        self.menu_buttons["categories"].configure(state="normal")
 
-        self.category_button.config(state="normal")
+    def remove_current_page(self):
+        """
+        Reset all buttons and remove current view
+        """
 
-    def remove_current_view(self):
-        """Usuwa obecnie wyświetlany widok."""
+        for button in self.menu_buttons.values():
+            button.reset()
+
         if self.current_view is not None:
             self.current_view.destroy()
             self.current_view = None
 
-    def show_board_view(self):
-        """Ładuje widok tablicy."""
-        self.remove_current_view()
-        self.current_view = BoardView(self)
-        self.current_view.pack(fill="both", expand=True, padx=10, pady=10)
+    def open_page(self, page: Panel, header: str):
+        """
+        Open page in main view and mark tab as active
+        """
 
-    def show_tasks_view(self):
-        """Ładuje widok zadań."""
-        self.remove_current_view()
-        self.current_view = TasksView(self)
-        self.current_view.pack(fill="both", expand=True, padx=10, pady=10)
+        self.menu_buttons[header].mark_active()
 
-    def show_category_view(self, category_frame):
-        """Ładuje widok kategorii."""
-        self.remove_current_view()
-        self.current_view = category_frame
+        self.current_view = page
         self.current_view.pack(fill="both", expand=True, padx=10, pady=10)
 
     def run(self):
-        self.login()
+        self.open_login_window()
         self.mainloop()
