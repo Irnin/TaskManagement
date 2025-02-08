@@ -15,10 +15,10 @@ class CategoryModel:
 	def __init__(self, masterModel):
 		self.masterModel = masterModel
 
-	def fetch_data(self, page=None, page_size=None):
+	def fetch_data(self):
 		""" Fetch data from the database and store it in self.data """
 		try:
-			response = self.masterModel.send_request("api/categories", "GET", page=page, page_size=page_size)
+			response = self.masterModel.send_request("api/categories", "GET")
 
 			response.raise_for_status()
 			self.data = response.json()
@@ -51,11 +51,11 @@ class CategoryModel:
 			"description": description
 		}
 
-		print(request_data)
-
 		response = self.masterModel.send_request(f"api/updateCategory/{id}", "PUT", data=request_data)
 
 		if response:
+			Logging.log_success(f"Category {name} updated")
 			return True
 		else:
+			Logging.log_error(f"Failed to update category {name}")
 			return False

@@ -7,12 +7,17 @@ class Model:
 	def __init__(self):
 		self.app_url = "http://127.0.0.1:8080"
 
-	def send_request(self, endpoint, method="GET", data=None, params=None, page=None, page_size=None):
+	def send_request(self, endpoint, method="GET", data=None, params=None):
 		url = f"{self.app_url}/{endpoint.lstrip('/')}"
 		headers = {"Content-Type": "application/json"}
 
 		if hasattr(self, 'user') and self.user is not None:
 			headers.update({"Authorization": f"Bearer {self.user.token}"})
+
+		log_message = f"Making a {method.upper()} request to endpoint: {url}"
+		if params:
+			log_message += f" with params: {params}"
+		Logging.log_info(log_message)
 
 		try:
 			if method.upper() == "GET":
@@ -31,7 +36,7 @@ class Model:
 			response.raise_for_status()
 			return response
 		except requests.RequestException as e:
-			Logging.log_warning(f"Request failed: {e}")
+			Logging.log_error(f"Request failed: {e}")
 			return None
 
 	def login(self, email, password) -> bool:

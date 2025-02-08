@@ -16,7 +16,10 @@ class PageFrame(tk.Frame):
 		self.tableFrame = tk.Frame(self)
 		self.tableFrame.columnconfigure(0, weight=1)
 		self.tableFrame.columnconfigure(1, weight=0)
+
 		self.tableFrame.rowconfigure(0, weight=1)
+		self.tableFrame.rowconfigure(1, weight=0)
+
 		self.tableFrame.pack(fill='both', expand=True)
 
 		self.table = ttk.Treeview(self.tableFrame, show='headings', selectmode='browse')
@@ -25,6 +28,10 @@ class PageFrame(tk.Frame):
 		scrollbar_y = ttk.Scrollbar(self.tableFrame, orient="vertical", command=self.table.yview)
 		self.table.configure(yscrollcommand=scrollbar_y.set)
 		scrollbar_y.grid(row=0, column=1, sticky='ns')
+
+		scrollbar_x = ttk.Scrollbar(self.tableFrame, orient="horizontal", command=self.table.xview)
+		self.table.configure(xscrollcommand=scrollbar_x.set)
+		scrollbar_x.grid(row=1, column=0, sticky='ew')
 
 		# Control panel
 		self.control_panel = ControlPanel(self, reload_data=self.load_data)
@@ -41,12 +48,10 @@ class PageFrame(tk.Frame):
 				self.table.column(column['column_name'], width=0, stretch=tk.NO)
 
 	def load_data(self, page=0, page_size=25):
-		print("Loading data")
 		self.remove_all_rows()
 
 		loaded_data = self.fetch_data(page=page, page_size=page_size)
 		loaded_data = loaded_data.json()
-		self.loaded_data = loaded_data
 
 		for row in loaded_data.get("content", []):
 			self.insert_row(row)
@@ -56,9 +61,9 @@ class PageFrame(tk.Frame):
 		last = loaded_data.get("last")
 		number = loaded_data.get("number")
 		total_pages = loaded_data.get("totalPages")
-		number_of_elements = loaded_data.get("numberOfElements")
+		total_elements = loaded_data.get("totalElements")
 
-		self.control_panel.update_ui(first, last, number, total_pages, number_of_elements)
+		self.control_panel.update_ui(first, last, number, total_pages, total_elements)
 
 	def insert_row(self, data):
 		columns = self.table['columns']
@@ -71,70 +76,65 @@ class PageFrame(tk.Frame):
 		for row in self.table.get_children():
 			self.table.delete(row)
 
-	def _get_heading(self, title: str):
-		heading = title.upper()
-		heading = heading.replace("_", " ")
-		return heading
-
-
 class ControlPanel(tk.Frame):
 	def __init__(self, root, reload_data=None):
 		self.root = root
 		self.page = 0
+		self.elements_per_page = 25
 
 		super().__init__(self.root)
 
 		# TK variables
-		self.elements_info = tk.StringVar(value="Elements: 0")
-		self.pagination_info = tk.StringVar(value="0 / 0")
+		self.tkv_elements_info = tk.StringVar(value="Elements: 0")
+		self.tkv_pagination_info = tk.StringVar(value="0 / 0")
+		self.tkv_elements_per_page = tk.StringVar(value="Elements per page: 25")
 
 		# Methods
 		self.reload_data = reload_data
 
 		self._setup_ui()
 
-	def on_selection_change(self, event):
-		page = self.page
-		self.elemets_per_page = event.widget.get()
-
-		print(f"Page: {page}, Elements per page: {self.elemets_per_page}")
-
 	def _setup_ui(self):
 		# Elements per page
-		combo_box = ttk.Combobox(self, values=["10", "25", "50", "100"])
-		combo_box.set("25")
-		combo_box.pack(side=tk.LEFT)
+		menu_button = tk.Menubutton(self, textvariable=self.tkv_elements_per_page, relief=tk.RAISED)
+		menu = tk.Menu(menu_button, tearoff=0)
+		menu_button.configure(menu=menu)
+		menu_button.pack(side=tk.LEFT)
 
-		combo_box.bind("<<ComboboxSelected>>", self.on_selection_change)
+		menu.add_command(label="10", command=lambda: self._update_elements_per_page(10))
+		menu.add_command(label="25", command=lambda: self._update_elements_per_page(25))
+		menu.add_command(label="50", command=lambda: self._update_elements_per_page(50))
+		menu.add_command(label="75", command=lambda: self._update_elements_per_page(75))
+		menu.add_command(label="100", command=lambda: self._update_elements_per_page(100))
 
 		# Previous buttons
 		self.previous_buttons = tk.Frame(self)
-		self.previous_buttons.pack(side=tk.LEFT)
+		self.previous_buttons.pack(side=tk.LEFT, expand=True)
 
-		self.first_page_button = tk.Button(self.previous_buttons, text="<<", command=self.go_to_first_page)
+		self.first_page_button = tk.Button(self.previous_buttons, text="<<", command=self._go_to_first_page)
 		self.first_page_button.pack(side=tk.LEFT)
 
-		self.previous_button = tk.Button(self.previous_buttons, text="<", command=self.go_to_previous_page)
+		self.previous_button = tk.Button(self.previous_buttons, text="<", command=self._go_to_previous_page)
 		self.previous_button.pack(side=tk.LEFT)
 
 		# Page number
-		self.page_number = tk.Label(self, textvariable=self.pagination_info)
+		self.page_number = tk.Label(self, textvariable=self.tkv_pagination_info)
 		self.page_number.pack(side=tk.LEFT, expand=True)
 
 		# Elements
-		tk.Label(self, textvariable=self.elements_info).pack(side=tk.RIGHT)
+		tk.Label(self, textvariable=self.tkv_elements_info).pack(side=tk.RIGHT)
 
 		# Next buttons
 		self.next_buttons = tk.Frame(self)
-		self.next_buttons.pack(side=tk.RIGHT)
+		self.next_buttons.pack(side=tk.RIGHT, expand=True)
 
-		self.last_page_button = tk.Button(self.next_buttons, text=">>", command=self.go_to_last_page)
+		self.last_page_button = tk.Button(self.next_buttons, text=">>", command=self._go_to_last_page)
 		self.last_page_button.pack(side=tk.RIGHT)
 
-		self.next_button = tk.Button(self.next_buttons, text=">", command=self.go_to_next_page)
+		self.next_button = tk.Button(self.next_buttons, text=">", command=self._go_to_next_page)
 		self.next_button.pack(side=tk.RIGHT)
 
-	def update_ui(self, first: bool, last: bool, page: int, total_pages: int, number_of_elements: int):
+	def update_ui(self, first: bool, last: bool, page: int, total_pages: int, total_elements: int):
 		self.toggle_previous_buttons(not first)
 		self.toggle_next_buttons(not last)
 
@@ -142,9 +142,9 @@ class ControlPanel(tk.Frame):
 		self.total_pages = total_pages
 
 		page_format = f" {self.page + 1} / {total_pages}"
-		self.pagination_info.set(page_format)
+		self.tkv_pagination_info.set(page_format)
 
-		self.elements_info.set(f"Elements: {number_of_elements}")
+		self.tkv_elements_info.set(f"Elements: {total_elements}")
 
 	def toggle_previous_buttons(self, available: bool):
 		if available:
@@ -162,18 +162,24 @@ class ControlPanel(tk.Frame):
 			self.next_button.config(state=tk.DISABLED)
 			self.last_page_button.config(state=tk.DISABLED)
 
-	def go_to_next_page(self):
-		self.page += 1
-		self.reload_data(page=self.page, page_size=25)
-
-	def go_to_previous_page(self):
+	# Actions
+	def _go_to_previous_page(self):
 		self.page -= 1
-		self.reload_data(page=self.page, page_size=25)
+		self.reload_data(page=self.page, page_size=self.elements_per_page)
 
-	def go_to_first_page(self):
+	def _go_to_next_page(self):
+		self.page += 1
+		self.reload_data(page=self.page, page_size=self.elements_per_page)
+
+	def _go_to_first_page(self):
 		self.page = 0
-		self.reload_data(page=self.page, page_size=25)
+		self.reload_data(page=self.page, page_size=self.elements_per_page)
 
-	def go_to_last_page(self):
+	def _go_to_last_page(self):
 		self.page = self.total_pages - 1
-		self.reload_data(page=self.page, page_size=25)
+		self.reload_data(page=self.page, page_size=self.elements_per_page)
+
+	def _update_elements_per_page(self, elements_per_page):
+		self.elements_per_page = elements_per_page
+		self.tkv_elements_per_page.set(f"Elements per page: {elements_per_page}")
+		self.reload_data(page=self.page, page_size=self.elements_per_page)

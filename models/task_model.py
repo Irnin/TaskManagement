@@ -6,5 +6,5 @@ class TaskModel:
 		return self.masterModel.send_request(
 			endpoint="/api/tasks/unassigned",
 			method="GET",
-			params={"page": page, "pageSize": page_size}
+			params={"page": page, "size": page_size}
 		)
