@@ -3,12 +3,13 @@ from tkinter import ttk
 
 class PageFrame(tk.Frame):
 
-	def __init__(self, root):
+	def __init__(self, root, data_source):
 		self.root = root
 
 		super().__init__(self.root)
 
 		self._setup_ui()
+		self.fetch_data = data_source
 
 	def _setup_ui(self):
 		self.tableFrame = tk.Frame(self)
@@ -37,6 +38,13 @@ class PageFrame(tk.Frame):
 
 			if not column['visible']:
 				self.table.column(column['column_name'], width=0, stretch=tk.NO)
+
+	def load_data(self):
+		loaded_data = self.fetch_data(0, 10)
+		loaded_data = loaded_data.json()
+
+		for row in loaded_data.get("content", []):
+			self.insert_row(row)
 
 	def insert_row(self, data):
 		columns = self.table['columns']

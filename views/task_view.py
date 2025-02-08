@@ -3,7 +3,6 @@ import tkinter as tk
 from views.modules.PageFrame import PageFrame
 from views.modules.Panel import Panel
 
-
 class TaskView(Panel):
     def __init__(self, parent, controller):
         super().__init__(parent, "Tasks")
@@ -13,7 +12,7 @@ class TaskView(Panel):
         self._setup_ui()
 
     def _setup_ui(self):
-        table = PageFrame(self)
+        table = PageFrame(self, self.controller.fetch_unassigned_tasks)
         table.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         columns = [{'column_name': 'idTask', 'column_label': 'ID', 'visible': False},
@@ -26,4 +25,4 @@ class TaskView(Panel):
 				   {'column_name': 'category', 'column_label': 'Category', 'visible': True}]
 
         table.configure_columns(columns)
-        table.insert_row({'idTask': 1, 'title': 'Task 1', 'description': 'Description 1', 'taskScore': 1, 'taskCreated': '2021-01-01', 'startDate': '2021-01-01', 'dueDate': '2021-01-01', 'category': 'Category 1'})
+        table.load_data()
