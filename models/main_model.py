@@ -7,19 +7,12 @@ class Model:
 	def __init__(self):
 		self.app_url = "http://127.0.0.1:8080"
 
-	def _send_request(self, endpoint, method="GET", data=None, params={}, page=None, page_size=None):
+	def send_request(self, endpoint, method="GET", data=None, params=None, page=None, page_size=None):
 		url = f"{self.app_url}/{endpoint.lstrip('/')}"
 		headers = {"Content-Type": "application/json"}
 
 		if hasattr(self, 'user') and self.user is not None:
 			headers.update({"Authorization": f"Bearer {self.user.token}"})
-
-		if params is None:
-			params = {}
-		if page is not None:
-			params['page'] = page
-		if page_size is not None:
-			params['size'] = page_size
 
 		try:
 			if method.upper() == "GET":
@@ -47,7 +40,7 @@ class Model:
 			"password": password
 		}
 
-		response = self._send_request(
+		response = self.send_request(
 			endpoint="/auth/login",
 			method="POST",
 			data=request_data
@@ -62,7 +55,7 @@ class Model:
 			return False
 
 	def get_user_details(self):
-		response = self._send_request(
+		response = self.send_request(
 			endpoint="/api/users/myAccount",
 			method="GET",
 		)
@@ -87,7 +80,7 @@ class Model:
 			return False
 
 	def get_tasks(self):
-		response = self._send_request(
+		response = self.send_request(
 			endpoint="/api/tasks",
 			method="GET"
 		)

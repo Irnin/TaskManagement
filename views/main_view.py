@@ -88,7 +88,7 @@ class View(tk.Tk):
             if logged_user.role == "ADMIN":
                 self.admin_logged()
 
-            self.controller.open_page("categories")
+            self.controller.open_page("tasks")
 
         else:
             tk.messagebox.showwarning("Error", "Can not login")

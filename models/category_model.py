@@ -18,7 +18,7 @@ class CategoryModel:
 	def fetch_data(self, page=None, page_size=None):
 		""" Fetch data from the database and store it in self.data """
 		try:
-			response = self.masterModel._send_request("api/categories", "GET", page=page, page_size=page_size)
+			response = self.masterModel.send_request("api/categories", "GET", page=page, page_size=page_size)
 
 			response.raise_for_status()
 			self.data = response.json()
@@ -53,7 +53,7 @@ class CategoryModel:
 
 		print(request_data)
 
-		response = self.masterModel._send_request(f"api/categories/{id}", "PUT", data=request_data)
+		response = self.masterModel.send_request(f"api/updateCategory/{id}", "PUT", data=request_data)
 
 		if response:
 			return True
