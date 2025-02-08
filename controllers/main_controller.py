@@ -9,11 +9,9 @@ from views.main_view import View
 
 class Controller:
 	def __init__(self):
-		Logging.log_info(f"Python: {sys.executable}")
+		Logging.log_info(f"Python: {sys.version}")
 		self.model = Model()
 		self.view = View(self)
-
-		#self.category_controller = CategoryController(self)
 
 	def run(self):
 		self.view.run()
