@@ -28,6 +28,28 @@ class PageFrame(tk.Frame):
 		self.control_panel = ControlPanel(self, 4)
 		self.control_panel.pack(side=tk.BOTTOM, fill=tk.X)
 
+	def configure_columns(self, columns):
+
+		self.table.configure(columns=[column['column_name'] for column in columns])
+
+		for column in columns:
+			self.table.heading(column['column_name'], text=column['column_label'])
+
+			if not column['visible']:
+				self.table.column(column['column_name'], width=0, stretch=tk.NO)
+
+	def insert_row(self, data):
+		columns = self.table['columns']
+
+		values = [data.get(column, "") for column in columns]
+
+		self.table.insert(parent='', index=tk.END, values=values)
+
+	def _get_heading(self, title: str):
+		heading = title.upper()
+		heading = heading.replace("_", " ")
+		return heading
+
 
 class ControlPanel(tk.Frame):
 	def __init__(self, root, totalPages):
