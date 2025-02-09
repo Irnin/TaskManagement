@@ -92,6 +92,9 @@ class Model:
 
 		return response
 
+	def is_admin(self):
+		return self.user.is_admin()
+
 class User:
 	def __init__(self, token):
 		self.token = token
@@ -107,10 +110,7 @@ class User:
 		self.zipcode = zipcode
 		self.city = city
 
-class Task:
-	def __init__(self, id, title, description, finished, due_date):
-		self.id = id
-		self.title = title
-		self.description = description
-		self.finished = finished
-		self.due_date = due_date
+		print(f"User: {self.first_name} {self.last_name} ({self.is_admin()})")
+
+	def is_admin(self):
+		return self.role == "ADMIN"

@@ -4,7 +4,7 @@ from views.modules.PageFrame import PageFrame
 from views.modules.Panel import Panel
 
 class TasksView(Panel):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, is_admin: bool = False):
         super().__init__(parent, "Tasks")
 
         self.controller = controller
@@ -15,8 +15,8 @@ class TasksView(Panel):
         main_frame = tk.Frame(self)
         self.load_main_page(main_frame)
 
-        table = PageFrame(main_frame, self.controller.fetch_unassigned_tasks)
-        table.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self.table = PageFrame(main_frame, self.controller.fetch_unassigned_tasks, self.controller.open_task)
+        self.table.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         columns = [{'column_name': 'idTask', 'column_label': 'ID', 'visible': False},
                    {'column_name': 'title', 'column_label': 'Title', 'visible': True},
@@ -27,7 +27,6 @@ class TasksView(Panel):
                    {'column_name': 'dueDate', 'column_label': 'Due date', 'visible': True},
                    {'column_name': 'category', 'column_label': 'Category', 'visible': True}]
 
-        table.configure_columns(columns)
-        table.load_data()
+        self.table.configure_columns(columns)
+        self.table.load_data()
 
-        tk.Button(main_frame, text="Show", command=lambda: self.controller.open_task(1)).pack(side=tk.BOTTOM)

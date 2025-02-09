@@ -11,6 +11,7 @@ class Panel(tk.Frame):
 		super().__init__(parent)
 
 		self.main_page: tk.Frame
+		self.header = header
 
 		# Tkinter variables
 		self.tkv_header = tk.StringVar()
@@ -54,4 +55,5 @@ class Panel(tk.Frame):
 		if hasattr(self, 'close_button'):
 			self.close_button.destroy()
 
+		self.tkv_header.set(self.header)
 		self._show_main_page()

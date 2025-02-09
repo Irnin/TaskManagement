@@ -4,13 +4,16 @@ from tkinter import ttk
 
 class PageFrame(tk.Frame):
 
-	def __init__(self, root, data_source):
+	def __init__(self, root, data_source, double_click_method=None):
 		self.root = root
 
 		super().__init__(self.root)
 
 		self._setup_ui()
 		self.fetch_data = data_source
+
+		self.table.bind("<Double-1>", self.double_click)
+		self.double_click_method = double_click_method
 
 	def _setup_ui(self):
 		self.tableFrame = tk.Frame(self)
@@ -65,6 +68,12 @@ class PageFrame(tk.Frame):
 
 		self.control_panel.update_ui(first, last, number, total_pages, total_elements)
 
+	def reload_data(self):
+		page = self.control_panel.page
+		page_size = self.control_panel.elements_per_page
+
+		self.load_data(page=page, page_size=page_size)
+
 	def insert_row(self, data):
 		columns = self.table['columns']
 
@@ -75,6 +84,17 @@ class PageFrame(tk.Frame):
 	def remove_all_rows(self):
 		for row in self.table.get_children():
 			self.table.delete(row)
+
+	def double_click(self, event):
+		item = self.table.selection()[0]
+
+		values = self.table.item(item, 'values')
+		column_names = self.table['columns']
+
+		# Create a dictionary with column names as keys and their corresponding values
+		item_dict = {column: value for column, value in zip(column_names, values)}
+
+		self.double_click_method(item_dict)
 
 class ControlPanel(tk.Frame):
 	def __init__(self, root, reload_data=None):

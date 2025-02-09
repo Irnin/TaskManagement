@@ -8,3 +8,9 @@ class TaskModel:
 			method="GET",
 			params={"page": page, "size": page_size}
 		)
+
+	def delete_task(self, taskId):
+		return self.masterModel.send_request(
+			endpoint="/api/task/" + str(taskId),
+			method="DELETE"
+		)

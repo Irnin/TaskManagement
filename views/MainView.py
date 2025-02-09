@@ -71,9 +71,9 @@ class View(tk.Tk):
 
         login_frame.pack(padx=10, pady=10)
 
-        # === DEBUG ===
-        # Quick login
-        self.handle_login("john.doe@example.com", "Aa444444")
+        # # === DEBUG ===
+        # # Quick login
+        # self.handle_login("john.doe@example.com", "Aa444444")
 
     def handle_login(self, email, password):
         if self.controller.login(email, password):
