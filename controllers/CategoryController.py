@@ -1,5 +1,5 @@
-from models.category_model import CategoryModel
-from views.category_view import CategoryView
+from models.CategoryCodel import CategoryModel
+from views.CategoryView import CategoryView
 
 class CategoryController:
 	def __init__(self, controller):

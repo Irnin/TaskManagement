@@ -1,5 +1,5 @@
-from models.board_model import BoardModel
-from views.board_view import BoardView
+from models.BoardModel import BoardModel
+from views.BoardView import BoardView
 
 class BoardController:
 	def __init__(self, controller):
