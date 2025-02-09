@@ -1,4 +1,4 @@
-from controllers.main_controller import Controller
+from controllers.MainController import Controller
 
 if __name__ == "__main__":
 	import sys

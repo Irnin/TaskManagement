@@ -1,11 +1,11 @@
 import sys
 
-from controllers.board_controller import BoardController
-from controllers.category_controller import CategoryController
-from controllers.task_controller import TaskController
-from models.main_model import Model
+from controllers.BoardController import BoardController
+from controllers.CategoryController import CategoryController
+from controllers.TasksController import TasksController
+from models.MainModel import Model
 from utility.logging import Logging
-from views.main_view import View
+from views.MainView import View
 
 class Controller:
 	def __init__(self):
@@ -26,7 +26,7 @@ class Controller:
 			self.view.open_page(board_controller.view, page)
 
 		elif page == "tasks":
-			task_controller = TaskController(self)
+			task_controller = TasksController(self)
 			self.view.open_page(task_controller.view, page)
 
 		elif page == "categories":

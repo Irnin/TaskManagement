@@ -26,9 +26,9 @@ class View(tk.Tk):
         self.top_bar.pack(fill='x')
 
         self.menu_buttons: dict[str, IconButton] = {
-            "board": IconButton(self.top_bar, "key.png", "Board", command=lambda: self.controller.open_page("board")),
-            "tasks": IconButton(self.top_bar, "key.png", "Tasks", command=lambda: self.controller.open_page("tasks")),
-            "categories": IconButton(self.top_bar, "key.png", "Categories", command=lambda: self.controller.open_page("categories"))}
+            "board": IconButton(self.top_bar, "board.png", "Board", command=lambda: self.controller.open_page("board")),
+            "tasks": IconButton(self.top_bar, "tasks.png", "Tasks", command=lambda: self.controller.open_page("tasks")),
+            "categories": IconButton(self.top_bar, "admin.png", "Admin", command=lambda: self.controller.open_page("categories"))}
 
         self.menu_buttons["categories"].configure(state="disabled")
 

@@ -8,7 +8,8 @@ class IconButton(tk.Button):
 
 		self.active = False
 
-		original_image = Image.open(iconName)
+		icon_path = f"assets/{iconName}"
+		original_image = Image.open(icon_path)
 		resized_image = original_image.resize((30, 30))
 		icon = ImageTk.PhotoImage(resized_image)
 
@@ -16,7 +17,6 @@ class IconButton(tk.Button):
 		self.image = icon
 
 		self.configure(command=command)
-
 
 	def mark_active(self):
 		self.config(highlightbackground="green")
