@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from views.modules.BetterText import BetterText
+from views.modules.PageFrame import PageFrame
 from views.modules.PaginatedTableFrame import PaginatedTableFrame
 from views.modules.Panel import Panel
 
@@ -71,6 +72,30 @@ class CategoryView(Panel):
         tk.Label(parent, text="Actions:", font=("Helvetica", 16, "bold"), anchor='w').pack(fill='x', pady=5)
 
         tk.Button(parent, text='Update', command=self.update_category).pack(fill='x', pady=5)
+
+    def select_category(self, tk_id, tk_name):
+        self.select_category_window = tk.Toplevel(self)
+
+        self.selected_category_id = tk_id
+        self.selected_category_name = tk_name
+
+        self.select_category_window.title("Select Category")
+
+        self.table = PageFrame(self.select_category_window, self.controller.fetch_categories, self.return_selected_category)
+        self.table.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        columns = [{'column_name': 'idCat', 'column_label': 'ID', 'visible': False},
+                   {'column_name': 'name', 'column_label': 'Name', 'visible': True},
+                   {'column_name': 'description', 'column_label': 'Description', 'visible': True}]
+
+        self.table.configure_columns(columns)
+        self.table.load_data()
+
+    def return_selected_category(self, category):
+        self.select_category_window.destroy()
+
+        self.selected_category_id.set(category['idCat'])
+        self.selected_category_name.set(category['name'])
 
     # Actions
     def insert_categories(self, categories):

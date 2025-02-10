@@ -15,33 +15,19 @@ class CategoryModel:
 	def __init__(self, masterModel):
 		self.masterModel = masterModel
 
-	def fetch_data(self):
+	def get_categories(self, page: int = 0, page_size: int = 25):
 		""" Fetch data from the database and store it in self.data """
 		try:
-			response = self.masterModel.send_request("api/categories", "GET")
+			response = self.masterModel.send_request(
+				endpoint="/api/categories",
+				method="GET",
+				params={"page": page, "size": page_size})
 
 			response.raise_for_status()
-			self.data = response.json()
+			return response
 
 		except requests.RequestException as e:
 			Logging.log_error(f"Request failed: {e}")
-
-	def get_categories(self):
-		""" Convert categories saved in self.data to Category objects and return them """
-		if not self.data or "content" not in self.data:
-			print("No data available")
-			return []
-
-		categories = []
-
-		for category in self.data.get("content", []):
-			idCat = category.get("idCat")
-			name = category.get("name")
-			description = category.get("description")
-
-			categories.append(Category(idCat, name, description))
-
-		return categories
 
 	def update_category(self, id, name, description):
 		""" Update category with id with new name and description """

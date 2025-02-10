@@ -17,6 +17,7 @@ class View(tk.Tk):
 
     def setup_ui(self):
         self.geometry("1000x600")
+        self.minsize(800, 400)
         self.title("Task Management")
 
         style = ttk.Style()
@@ -73,7 +74,7 @@ class View(tk.Tk):
 
         # # === DEBUG ===
         # # Quick login
-        # self.handle_login("john.doe@example.com", "Aa444444")
+        self.handle_login("john.doe@example.com", "Aa444444")
 
     def handle_login(self, email, password):
         if self.controller.login(email, password):

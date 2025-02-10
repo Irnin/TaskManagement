@@ -47,12 +47,23 @@ class Panel(tk.Frame):
 
 	def _show_main_page(self):
 		"""Method shows main page"""
+
+		if hasattr(self, 'sub_page'):
+			self.sub_page.pack_forget()
+			self.sub_page.destroy()
+
+		if hasattr(self, 'close_button'):
+			self.close_button.pack_forget()
+			self.close_button.destroy()
+
 		self.main_page.pack(side='top', fill='both', expand=True)
 
 	def close(self):
 		self.sub_page.pack_forget()
+		self.sub_page.destroy()
 
 		if hasattr(self, 'close_button'):
+			self.close_button.pack_forget()
 			self.close_button.destroy()
 
 		self.tkv_header.set(self.header)

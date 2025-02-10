@@ -56,6 +56,8 @@ class PageFrame(tk.Frame):
 		loaded_data = self.fetch_data(page=page, page_size=page_size)
 		loaded_data = loaded_data.json()
 
+		print(loaded_data)
+
 		for row in loaded_data.get("content", []):
 			self.insert_row(row)
 
