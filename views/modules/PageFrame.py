@@ -2,9 +2,12 @@ import json
 import tkinter as tk
 from tkinter import ttk
 
+from django.utils.termcolors import background, foreground
+
+
 class PageFrame(tk.Frame):
 
-	def __init__(self, root, data_source, double_click_method=None):
+	def __init__(self, root, data_source, double_click_method=None, selected_method=None, unselected_method=None):
 		self.root = root
 
 		super().__init__(self.root)
@@ -12,10 +15,20 @@ class PageFrame(tk.Frame):
 		self._setup_ui()
 		self.fetch_data = data_source
 
-		self.table.bind("<Double-1>", self.double_click)
-		self.double_click_method = double_click_method
+		if double_click_method is not None:
+			self.table.bind("<Double-1>", self.double_click)
+			self.double_click_method = double_click_method
+
+		if selected_method is not None:
+			self.table.bind("<<TreeviewSelect>>", self.selected_method)
+			self.selected_method = selected_method
+
+		self.unselected_method = unselected_method
 
 	def _setup_ui(self):
+		style = ttk.Style()
+		style.configure("Treeview", background="#1E1E1E", fieldbackground="#1E1E1E", foreground="white")
+
 		self.tableFrame = tk.Frame(self)
 		self.tableFrame.columnconfigure(0, weight=1)
 		self.tableFrame.columnconfigure(1, weight=0)
@@ -56,8 +69,6 @@ class PageFrame(tk.Frame):
 		loaded_data = self.fetch_data(page=page, page_size=page_size)
 		loaded_data = loaded_data.json()
 
-		print(loaded_data)
-
 		for row in loaded_data.get("content", []):
 			self.insert_row(row)
 
@@ -87,16 +98,28 @@ class PageFrame(tk.Frame):
 		for row in self.table.get_children():
 			self.table.delete(row)
 
+	def get_selected_item(self):
+		try:
+			item = self.table.selection()[0]
+
+			values = self.table.item(item, 'values')
+			column_names = self.table['columns']
+
+			# Create a dictionary with column names as keys and their corresponding values
+			item_dict = {column: value for column, value in zip(column_names, values)}
+
+			return item_dict
+		except IndexError:
+
+			if self.unselected_method is not None:
+				self.unselected_method()
+			return None
+
 	def double_click(self, event):
-		item = self.table.selection()[0]
+		self.double_click_method(self.get_selected_item())
 
-		values = self.table.item(item, 'values')
-		column_names = self.table['columns']
-
-		# Create a dictionary with column names as keys and their corresponding values
-		item_dict = {column: value for column, value in zip(column_names, values)}
-
-		self.double_click_method(item_dict)
+	def selected_method(self, event):
+		self.selected_method(self.get_selected_item())
 
 class ControlPanel(tk.Frame):
 	def __init__(self, root, reload_data=None):

@@ -1,6 +1,7 @@
 from controllers.CategoryController import CategoryController
 from controllers.TaskController import TaskController
 from models.TaskModel import TaskModel
+from utility.logging import Logging
 from views.TasksView import TasksView
 from views.taskCreateSubpage import TaskCreateSubpage
 
@@ -29,12 +30,21 @@ class TasksController:
     def reload_data(self):
         self.view.table.reload_data()
 
-    def create_task(self):
+    def open_create_task(self):
         create_task_view = TaskCreateSubpage(self.view, self, self.is_admin)
         self.view.update_header("Create Task")
 
         self.view.load_subpage(create_task_view)
 
+    def create_task(self, title, description, category_id, task_score, due_date):
+        self.model.create_task(title, description, category_id, task_score, due_date)
+
     def select_category(self, tk_id, tk_name):
         category_controller = CategoryController(self.masterController)
         category_controller.view.select_category(tk_id, tk_name)
+
+    def delete_task(self, task_id):
+        Logging.log_info(f"Deleting task with id {task_id}")
+        self.model.delete_task(task_id)
+
+        self.reload_data()

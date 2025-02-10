@@ -21,7 +21,7 @@ class View(tk.Tk):
         self.title("Task Management")
 
         style = ttk.Style()
-        style.theme_use('aqua')
+        style.theme_use("clam")
 
         self.top_bar = tk.Frame(self, bg="#808080")
         self.top_bar.pack(fill='x')

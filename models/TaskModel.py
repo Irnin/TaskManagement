@@ -14,3 +14,17 @@ class TaskModel:
 			endpoint="/api/task/" + str(taskId),
 			method="DELETE"
 		)
+
+	def create_task(self, title, description, category_id, task_score, due_date):
+		response = self.masterModel.send_request(
+			endpoint=f"/api/createTask/category/{category_id}",
+			method="POST",
+			data={
+				"title": title,
+				"description": description,
+				"taskScore": task_score,
+				"dueDate": due_date
+			}
+		)
+
+		return response
