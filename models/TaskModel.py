@@ -28,3 +28,11 @@ class TaskModel:
 		)
 
 		return response
+
+	def assign_task(self, taskId, userId):
+		response = self.masterModel.send_request(
+			endpoint=f"/api/tasks/assigne/{taskId}/to/{userId}",
+			method="PATCH"
+		)
+
+		return response
