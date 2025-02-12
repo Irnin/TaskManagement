@@ -68,7 +68,7 @@ class Model:
 		response = response.json()
 
 		if response:
-			id = response.get("id")
+			id = response.get("idUser")
 			first_name = response.get("firstName")
 			last_name = response.get("lastName")
 			email = response.get("email")
@@ -100,7 +100,7 @@ class User:
 		self.token = token
 
 	def update_details(self, id, first_name, last_name, email, role, phone_number=None, address=None, zipcode=None, city=None):
-		self.id = id
+		self.id = int(id)
 		self.first_name = first_name
 		self.last_name = last_name
 		self.email = email

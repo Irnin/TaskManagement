@@ -49,7 +49,7 @@ class TasksView(Panel):
         create_task_button = IconButton(action_frame, "add.png", "Create task", lambda: self.controller.open_create_task())
         create_task_button.pack(side=tk.TOP)
 
-        self.assign_task_button = IconButton(action_frame, "assign.png", "Assign task", lambda: print("Assign task"))
+        self.assign_task_button = IconButton(action_frame, "assign.png", "Assign task", lambda: self.controller.assign_task(self.selected_task['idTask']))
         self.assign_task_button.pack(side=tk.TOP)
         self.assign_task_button.configure(state=tk.DISABLED)
 
