@@ -15,3 +15,9 @@ class BoardModel:
 			endpoint=f"/api/tasks/unassigne/{id}",
 			method="PATCH"
 		)
+
+	def finish_task(self, id):
+		self.masterModel.send_request(
+			endpoint=f"/api/tasks/complete/{id}",
+			method="PATCH"
+		)
