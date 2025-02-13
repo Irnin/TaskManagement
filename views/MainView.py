@@ -36,6 +36,14 @@ class View(tk.Tk):
         for button in self.menu_buttons.values():
             button.pack(side="left")
 
+        menu = tk.Menu(self)
+        self.config(menu=menu)
+
+        task_menu = tk.Menu(menu)
+        menu.add_cascade(label="Tasks", menu=task_menu)
+        task_menu.add_command(label="My tasks", command=lambda: self.controller.open_page("board"))
+        task_menu.add_command(label="Open task", command=self.open_task)
+
     def open_login_window(self):
         self.login_window = tk.Toplevel(self)
         #self.login_window.geometry("400x200")
@@ -119,6 +127,15 @@ class View(tk.Tk):
 
         self.current_view = page
         self.current_view.pack(fill="both", expand=True, padx=10, pady=10)
+
+    def open_task(self):
+        top_window = tk.Toplevel(self)
+        top_window.title("Task")
+
+        tk.Label(top_window, text="Provide task ID").pack()
+        task_id = tk.StringVar()
+        tk.Entry(top_window, textvariable=task_id).pack()
+        tk.Button(top_window, text="Open task", command=lambda: self.controller.open_task(task_id.get())).pack()
 
     def run(self):
         self.open_login_window()

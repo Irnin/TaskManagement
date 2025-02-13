@@ -36,3 +36,9 @@ class TaskModel:
 		)
 
 		return response
+
+	def get_task(self, taskId):
+		return self.masterModel.send_request(
+			endpoint=f"/api/task/{taskId}",
+			method="GET"
+		)

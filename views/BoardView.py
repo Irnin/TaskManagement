@@ -44,17 +44,16 @@ class BoardView(Panel):
 
         # Configure the buttons
         self.assign_task_button = IconButton(action_frame, "assign.png", "Unassigne task", lambda: self.controller.unassigne_task(self.selected_task['idTask']))
-        self.assign_task_button.pack(side=tk.TOP)
+        self.assign_task_button.pack(side=tk.TOP, fill=tk.X)
         self.assign_task_button.configure(state=tk.DISABLED)
 
-        self.finish_task_button = IconButton(action_frame, "finish.png", "Finish task",
-                                             lambda: self.controller.finish_task(self.selected_task['idTask']))
-        self.finish_task_button.pack(side=tk.TOP)
+        self.finish_task_button = IconButton(action_frame, "finish.png", "Finish task", lambda: self.controller.finish_task(self.selected_task['idTask']))
+        self.finish_task_button.pack(side=tk.TOP, fill=tk.X)
         self.finish_task_button.configure(state=tk.DISABLED)
 
         if self.controller.masterModel.is_admin():
             self.delete_task_button = IconButton(action_frame, "delete.png", "Delete task", lambda: self.controller.delete_task(self.selected_task['idTask']))
-            self.delete_task_button.pack(side=tk.BOTTOM)
+            self.delete_task_button.pack(side=tk.BOTTOM, fill=tk.X)
             self.delete_task_button.configure(state=tk.DISABLED)
 
 
