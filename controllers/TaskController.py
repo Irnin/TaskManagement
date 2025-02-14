@@ -7,10 +7,10 @@ class TaskController:
 
 	def __init__(self, root: tk.Frame, master_controller, taskId: int, is_admin: bool):
 		self.model = master_controller.model
-		self.master_controller = master_controller
 		self.view = TaskSubpage(root, self, is_admin)
 
 		self.taskId = taskId
+		self.get_task_details()
 
 		self.master_controller = master_controller
 
@@ -20,3 +20,8 @@ class TaskController:
 
 		self.master_controller.reload_data()
 		self.master_controller.view.close()
+
+	def get_task_details(self):
+		self.task = self.model.get_task(self.taskId).json()
+
+		print(self.task)

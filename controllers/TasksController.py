@@ -27,6 +27,14 @@ class TasksController:
 
         self.view.load_subpage(task_controller.view)
 
+    def open_task_with_id(self, task_id):
+        try:
+            task = self.model.get_task(task_id)
+            task = task.json()
+            self.open_task(task)
+        except Exception as e:
+            Logging.log_error(f"Can not open task with id {task_id}")
+
     def reload_data(self):
         self.view.table.reload_data()
 

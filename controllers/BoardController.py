@@ -27,3 +27,8 @@ class BoardController:
 		self.model.unassigne_task(task_id)
 
 		self.view.table.load_data()
+
+	def finish_task(self, task_id: int):
+		self.model.finish_task(task_id)
+
+		self.view.table.load_data()

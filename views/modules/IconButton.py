@@ -13,7 +13,7 @@ class IconButton(tk.Button):
 		resized_image = original_image.resize((30, 30))
 		icon = ImageTk.PhotoImage(resized_image)
 
-		self.config(image=icon, text=text, compound="left", pady=5, font=("Arial", 12), borderwidth=0, relief="flat", padx=5)
+		self.config(image=icon, text=text, compound="left", pady=5, font=("Arial", 12), borderwidth=0, relief="flat", padx=5, anchor="w")
 		self.image = icon
 
 		self.configure(command=command)

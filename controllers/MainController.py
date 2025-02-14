@@ -26,8 +26,8 @@ class Controller:
 			self.view.open_page(board_controller.view, page)
 
 		elif page == "tasks":
-			task_controller = TasksController(self)
-			self.view.open_page(task_controller.view, page)
+			self.task_controller = TasksController(self)
+			self.view.open_page(self.task_controller.view, page)
 
 		elif page == "categories":
 			category_controller = CategoryController(self)
@@ -46,3 +46,8 @@ class Controller:
 
 	def get_user(self):
 		return self.model.user
+
+	def open_task(self, task_id):
+		self.open_page("tasks")
+
+		self.task_controller.open_task_with_id(task_id)
