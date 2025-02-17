@@ -5,7 +5,6 @@ from utility.logging import Logging
 from views.TasksView import TasksView
 from views.taskCreateSubpage import TaskCreateSubpage
 
-
 class TasksController:
     def __init__(self, controller):
         self.masterController = controller

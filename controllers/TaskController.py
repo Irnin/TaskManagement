@@ -6,11 +6,12 @@ import tkinter as tk
 class TaskController:
 
 	def __init__(self, root: tk.Frame, master_controller, taskId: int, is_admin: bool):
-		self.model = master_controller.model
-		self.view = TaskSubpage(root, self, is_admin)
+		self.model = TaskModel(master_controller.masterModel)
 
 		self.taskId = taskId
 		self.get_task_details()
+
+		self.view = TaskSubpage(root, self, is_admin)
 
 		self.master_controller = master_controller
 

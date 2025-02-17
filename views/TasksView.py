@@ -11,7 +11,6 @@ class TasksView(Panel):
         super().__init__(parent, "Tasks")
 
         self.controller = controller
-
         self.selected_task = None
 
         self._setup_ui()

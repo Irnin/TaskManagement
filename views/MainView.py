@@ -29,12 +29,17 @@ class View(tk.Tk):
         self.menu_buttons: dict[str, IconButton] = {
             "board": IconButton(self.top_bar, "board.png", "Board", command=lambda: self.controller.open_page("board")),
             "tasks": IconButton(self.top_bar, "tasks.png", "Tasks", command=lambda: self.controller.open_page("tasks")),
-            "categories": IconButton(self.top_bar, "admin.png", "Admin", command=lambda: self.controller.open_page("categories"))}
+            "categories": IconButton(self.top_bar, "admin.png", "Admin", command=lambda: self.controller.open_page("categories")),
+            "account": IconButton(self.top_bar, "account.png", "", command=lambda: self.controller.open_page("account"))}
 
         self.menu_buttons["categories"].configure(state="disabled")
 
-        for button in self.menu_buttons.values():
-            button.pack(side="left")
+        for key, button in self.menu_buttons.items():
+
+            if key == "account":
+                button.pack(side='right')
+            else:
+                button.pack(side="left")
 
         menu = tk.Menu(self)
         self.config(menu=menu)
@@ -91,8 +96,7 @@ class View(tk.Tk):
             # Displaying logged user
             logged_user = self.controller.get_user()
 
-            self.logged_user_label = tk.Label(self.top_bar, text=f"{logged_user.first_name} {logged_user.last_name}", bg="gray", padx=10)
-            self.logged_user_label.pack(side="right")
+            self.menu_buttons['account'].set_text(f"{logged_user.first_name} {logged_user.last_name}")
 
             if logged_user.role == "ADMIN":
                 self.admin_logged()
@@ -103,7 +107,7 @@ class View(tk.Tk):
             tk.messagebox.showwarning("Error", "Can not login")
 
     def admin_logged(self):
-        self.logged_user_label.configure(foreground="yellow")
+        self.menu_buttons["account"].set_bg("yellow")
         self.menu_buttons["categories"].configure(state="normal")
 
     def remove_current_page(self):
@@ -127,6 +131,8 @@ class View(tk.Tk):
 
         self.current_view = page
         self.current_view.pack(fill="both", expand=True, padx=10, pady=10)
+
+        self.menu_buttons["account"].set_bg("orange")
 
     def open_task(self):
         top_window = tk.Toplevel(self)

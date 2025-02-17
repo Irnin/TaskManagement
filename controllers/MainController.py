@@ -3,6 +3,7 @@ import sys
 from controllers.BoardController import BoardController
 from controllers.CategoryController import CategoryController
 from controllers.TasksController import TasksController
+from controllers.UserController import UserController
 from models.MainModel import Model
 from utility.logging import Logging
 from views.MainView import View
@@ -32,6 +33,11 @@ class Controller:
 		elif page == "categories":
 			category_controller = CategoryController(self)
 			self.view.open_page(category_controller.view, page)
+
+		elif page == "account":
+			user_controller = UserController(self)
+			self.view.open_page(user_controller.view, page)
+
 
 	def login(self, email, password):
 		Logging.log_info(f"{email} tries to login")

@@ -95,6 +95,9 @@ class Model:
 	def is_admin(self):
 		return self.user.is_admin()
 
+	def get_user_name(self):
+		return f"{self.user.first_name} {self.user.last_name}"
+
 class User:
 	def __init__(self, token):
 		self.token = token
