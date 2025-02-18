@@ -4,6 +4,8 @@ from tkinter import ttk
 
 from views.modules.BetterText import BetterText
 from views.modules.IconButton import IconButton
+from views.modules.ScrollableFrame import ScrollableFrame
+
 
 class TaskSubpage(tk.Frame):
 
@@ -53,6 +55,15 @@ class TaskSubpage(tk.Frame):
 			tk.Label(task_workflow_frame, text="Rated: " + str(self.controller.task['rate_data']['score']), anchor='w').pack(fill='x')
 			tk.Label(task_workflow_frame, text="Reviewer: " + self.controller.task['ratedBy'] , anchor='w').pack(fill='x')
 
+		if self.controller.task['hasAchievement']:
+			ttk.Separator(task_workflow_frame, orient='horizontal').pack(fill='x', pady=5)
+			tk.Label(task_workflow_frame, text="Achievements:", anchor='w').pack(fill='x')
+
+			achivements_frame = ScrollableFrame(task_workflow_frame)
+			achivements_frame.pack(fill='both', expand=True)
+
+			for achivement in self.controller.task['achievements']:
+				self.achievement_widget(achivements_frame.scrollable_frame, achivement).pack(fill='x')
 
 		# Action
 		action_frame = tk.Frame(self)
@@ -74,7 +85,7 @@ class TaskSubpage(tk.Frame):
 			IconButton(action_frame, iconName="assign.png", text="Rate Task", command=self.rate_task).pack(side='top', fill='x')
 
 		# Delete Task Button for admin
-		if self.is_admin:
+		if self.is_admin and not self.controller.task['finished']:
 			IconButton(action_frame, iconName="delete.png", text="Delete Task", command=self.confirm_delete_task).pack(side='bottom', fill='x')
 
 	def confirm_delete_task(self):
@@ -99,4 +110,51 @@ class TaskSubpage(tk.Frame):
 		tk.Button(frame, text="Rate", command=lambda: self.controller.rate_task(rate.get())).pack(fill='x')
 
 	def grant_achievement(self):
-		pass
+		self.grant_achievement_window = tk.Toplevel(self)
+		self.grant_achievement_window.title("Grant Achievement")
+
+		frame = tk.Frame(self.grant_achievement_window)
+		frame.pack(fill='both', expand=True, padx=10, pady=10)
+
+		tkv_title = tk.StringVar()
+		tkv_description = tk.StringVar()
+		tkv_score = tk.IntVar()
+
+		frame.columnconfigure((0,1), weight=1)
+		frame.rowconfigure((0, 1, 2, 3), weight=1)
+
+		tk.Label(frame, text="Title").grid(row=0, column=0, sticky='nsew')
+		tk.Entry(frame, textvariable=tkv_title).grid(row=0, column=1, sticky='nsew')
+
+		tk.Label(frame, text="Description").grid(row=1, column=0, sticky='nsew')
+		BetterText(frame, textvariable=tkv_description).grid(row=1, column=1, sticky='nsew')
+
+		tk.Label(frame, text="Score").grid(row=2, column=0, sticky='nsew')
+		tk.Scale(frame, from_=1, to=5, orient='horizontal', variable=tkv_score).grid(row=2, column=1, sticky='nsew')
+
+		tk.Button(frame, text="Grant", command=lambda: self.controller.grant_achievement(tkv_title.get(), tkv_description.get(), tkv_score.get())).grid(row=3, column=0, columnspan=2, sticky='nsew')
+
+	def destroy_grant_achievement_window(self):
+		self.grant_achievement_window.destroy()
+		self.controller.reset_view()
+
+	def achievement_widget(self, root, achievement):
+		frame = tk.Frame(root)
+
+		frame.columnconfigure((0, 1), weight=1)
+		frame.rowconfigure((0, 1, 2, 3), weight=1)
+
+		tk.Label(frame, text=achievement['title'], anchor='w').grid(row=0, column=0, sticky='nsew')
+		tk.Label(frame, text=achievement['description'], anchor='w').grid(row=1, column=0, sticky='nsew')
+		tk.Label(frame, text="Score: " + str(achievement['valueScore']), anchor='w').grid(row=2, column=0, sticky='nsew')
+
+		if achievement['confirmedBy'] is None:
+			tk.Label(frame, text="Pending", anchor='w').grid(row=0, column=1, sticky='nsew')
+
+			if self.is_admin:
+				tk.Button(frame, text="Confirm", command= lambda: self.controller.confirm_achievement(achievement['idAchiev'])).grid(row=1, column=1, sticky='nsew')
+				tk.Button(frame, text="Reject", command= lambda:self.controller.reject_achievement(achievement['idAchiev'])).grid(row=2, column=1, sticky='nsew')
+
+		ttk.Separator(frame, orient='horizontal').grid(row=3, column=0, columnspan=2, sticky='ew')
+
+		return frame

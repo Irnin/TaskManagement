@@ -29,6 +29,7 @@ class TaskController:
 		self.is_assigned()
 		self.has_review()
 		self.is_my_task()
+		self.has_achievement()
 
 	def is_assigned(self):
 		""" Check if the task is assigned to a user """
@@ -55,6 +56,7 @@ class TaskController:
 			review.raise_for_status()
 
 			data = review.json()
+
 			if data:
 				self.task['rate'] = True
 				self.task['rate_data'] = data
@@ -74,6 +76,24 @@ class TaskController:
 
 		if my_id == task_assigned_user:
 			self.task['myTask'] = True
+
+	def has_achievement(self):
+		self.task['hasAchievement'] = False
+
+		achievement = self.model.fetch_achievements(self.taskId)
+
+		try:
+			achievement.raise_for_status()
+
+			data = achievement.json()
+
+			print(data)
+			if 'content' in data and isinstance(data['content'], list) and len(data['content']) > 0:
+				self.task['hasAchievement'] = True
+				self.task['achievements'] = data['content']
+
+		except Exception as e:
+			Logging.log_info(f"Failed to get assigned user: {e}")
 
 	# Actions
 	def assign_task(self):
@@ -101,3 +121,22 @@ class TaskController:
 
 		self.view = TaskSubpage(self.root, self, self.is_admin)
 		self.master_controller.update_subpage(self.view)
+
+	def grant_achievement(self, title, description, score):
+
+		if not title.strip() or not description.strip():
+			return
+
+		self.model.grant_achievement(self.taskId, title, description, score)
+
+		self.view.destroy_grant_achievement_window()
+
+	def confirm_achievement(self, achievementId):
+		self.model.accept_achievement(achievementId)
+
+		self.reset_view()
+
+	def reject_achievement(self, achievementId):
+		self.model.reject_achievement(achievementId)
+
+		self.reset_view()

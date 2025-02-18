@@ -67,6 +67,12 @@ class TaskModel:
 			method="GET"
 		)
 
+	def fetch_achievements(self, taskId):
+		return self.masterModel.send_request(
+			endpoint=f"api/achievements/task/{taskId}",
+			method="GET"
+		)
+
 	def finish_task(self, task_id):
 		self.masterModel.send_request(
 			endpoint=f"/api/tasks/complete/{task_id}",
@@ -86,3 +92,29 @@ class TaskModel:
 
 		except requests.RequestException as e:
 			Logging.log_error(f"Request failed: {e}")
+
+	def grant_achievement(self, task_id, title, description, score):
+
+		print(task_id, title, description, score)
+
+		self.masterModel.send_request(
+			endpoint=f"api/achievements/create/forTask/{task_id}",
+			method="POST",
+			data={
+				"title": title,
+				"description": description,
+				"valueScore": score
+			}
+		)
+
+	def accept_achievement(self, achievementId):
+		self.masterModel.send_request(
+			endpoint=f"api/achievements/confirm/{achievementId}",
+			method="PATCH"
+		)
+
+	def reject_achievement(self, achievementId):
+		self.masterModel.send_request(
+			endpoint=f"api/achievements/{achievementId}",
+			method="DELETE"
+		)
