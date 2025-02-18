@@ -1,3 +1,4 @@
+from controllers.TaskController import TaskController
 from models.CategoryModel import CategoryModel
 from views.AdminView import AdminView
 
@@ -7,8 +8,8 @@ class AdminController:
 		self.masterModel = controller.model
 		self.masterView = controller.view
 
-		self.view = AdminView(self.masterView, self)
 		self.model = CategoryModel(self.masterModel)
+		self.view = AdminView(self.masterView, self)
 
 	def fetch_categories(self, page: int = 0, page_size: int = 25):
 		return self.model.get_categories(page=page, page_size=page_size)
@@ -29,5 +30,12 @@ class AdminController:
 		self.place_for_category = category
 		self.view.return_selected_category(category)
 
+	def fetch_admin_jobs(self, page: int = 0, page_size: int = 25):
+		return self.model.get_admin_jobs(page=page, page_size=page_size)
 
+	def open_task(self, task):
+		task_controller = TaskController(self.view, self, task['idTask'], self.masterModel.is_admin())
 
+		self.view.update_header(f"Task [{task['idTask']}] - {task['title']}")
+
+		self.view.load_subpage(task_controller.view)

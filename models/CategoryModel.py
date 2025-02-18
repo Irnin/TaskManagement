@@ -45,3 +45,10 @@ class CategoryModel:
 		else:
 			Logging.log_error(f"Failed to update category {name}")
 			return False
+
+	def get_admin_jobs(self, page, page_size):
+		return self.masterModel.send_request(
+			endpoint="/api/tasks/adminJobs",
+			method="GET",
+			params={"page": page, "size": page_size}
+		)
