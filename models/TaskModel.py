@@ -42,3 +42,22 @@ class TaskModel:
 			endpoint=f"/api/task/{taskId}",
 			method="GET"
 		)
+
+	def assigned_user(self, taskId):
+		return self.masterModel.send_request(
+			endpoint=f"/api/task/{taskId}/assignedUser",
+			method="GET"
+		)
+
+	def rate_task(self, task_id, rate):
+		return self.masterModel.send_request(
+			endpoint=f"/api/rate/tasks/{task_id}/rate",
+			method="PATCH",
+			data={"score": rate}
+		)
+
+	def fetch_review(self, taskId):
+		return self.masterModel.send_request(
+			endpoint=f"/api/task/{taskId}/rate",
+			method="GET"
+		)

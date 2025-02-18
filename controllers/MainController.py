@@ -1,7 +1,7 @@
 import sys
 
 from controllers.BoardController import BoardController
-from controllers.CategoryController import CategoryController
+from controllers.AdminController import AdminController
 from controllers.TasksController import TasksController
 from controllers.UserController import UserController
 from models.MainModel import Model
@@ -31,7 +31,7 @@ class Controller:
 			self.view.open_page(self.task_controller.view, page)
 
 		elif page == "categories":
-			category_controller = CategoryController(self)
+			category_controller = AdminController(self)
 			self.view.open_page(category_controller.view, page)
 
 		elif page == "account":

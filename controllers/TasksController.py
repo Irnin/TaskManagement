@@ -1,4 +1,4 @@
-from controllers.CategoryController import CategoryController
+from controllers.AdminController import AdminController
 from controllers.TaskController import TaskController
 from models.TaskModel import TaskModel
 from utility.logging import Logging
@@ -33,6 +33,7 @@ class TasksController:
             self.open_task(task)
         except Exception as e:
             Logging.log_error(f"Can not open task with id {task_id}")
+            Logging.log_error(f"Error: {e}")
 
     def reload_data(self):
         self.view.table.reload_data()
@@ -47,7 +48,7 @@ class TasksController:
         self.model.create_task(title, description, category_id, task_score, due_date)
 
     def select_category(self, tk_id, tk_name):
-        category_controller = CategoryController(self.masterController)
+        category_controller = AdminController(self.masterController)
         category_controller.view.select_category(tk_id, tk_name)
 
     def delete_task(self, task_id):
@@ -64,3 +65,6 @@ class TasksController:
         self.model.assign_task(task_id, user_id)
 
         self.reload_data()
+
+    def rate_task(self, task_id, rate):
+        self.model.rate_task(task_id, rate)

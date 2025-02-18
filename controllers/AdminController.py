@@ -1,13 +1,13 @@
 from models.CategoryModel import CategoryModel
-from views.CategoryView import CategoryView
+from views.AdminView import AdminView
 
-class CategoryController:
+class AdminController:
 	def __init__(self, controller):
 		self.masterController = controller
 		self.masterModel = controller.model
 		self.masterView = controller.view
 
-		self.view = CategoryView(self.masterView, self)
+		self.view = AdminView(self.masterView, self)
 		self.model = CategoryModel(self.masterModel)
 
 	def fetch_categories(self, page: int = 0, page_size: int = 25):
