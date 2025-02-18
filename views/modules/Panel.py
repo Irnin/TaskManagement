@@ -42,6 +42,10 @@ class Panel(tk.Frame):
 		self.sub_page = page
 		self.sub_page.pack(side='top', fill='both', expand=True)
 
+		if hasattr(self, 'close_button'):
+			self.close_button.pack_forget()
+			self.close_button.destroy()
+
 		self.close_button = IconButton(self.top_bar, "close.png", "Close", command=self.close)
 		self.close_button.pack(side='right')
 

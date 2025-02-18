@@ -16,4 +16,4 @@ class AdminView(Panel):
         self._setup_ui()
 
     def _setup_ui(self):
-        pass
+        tk.Label(self, text="Admin panel").pack()

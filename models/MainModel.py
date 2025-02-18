@@ -98,6 +98,9 @@ class Model:
 	def get_user_name(self):
 		return f"{self.user.first_name} {self.user.last_name}"
 
+	def get_user_id(self):
+		return self.user.id
+
 class User:
 	def __init__(self, token):
 		self.token = token

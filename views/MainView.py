@@ -29,12 +29,13 @@ class View(tk.Tk):
         self.menu_buttons: dict[str, IconButton] = {
             "board": IconButton(self.top_bar, "board.png", "Board", command=lambda: self.controller.open_page("board")),
             "tasks": IconButton(self.top_bar, "tasks.png", "Tasks", command=lambda: self.controller.open_page("tasks")),
-            "categories": IconButton(self.top_bar, "admin.png", "Admin", command=lambda: self.controller.open_page("categories")),
-            "account": IconButton(self.top_bar, "account.png", "", command=lambda: self.controller.open_page("account"))}
-
-        self.menu_buttons["categories"].configure(state="disabled")
+            "account": IconButton(self.top_bar, "account.png", "", command=lambda: self.controller.open_page("account")),
+            "admin": IconButton(self.top_bar, "admin.png", "Admin", command=lambda: self.controller.open_page("admin"))}
 
         for key, button in self.menu_buttons.items():
+
+            if key == "admin":
+                continue
 
             if key == "account":
                 button.pack(side='right')
@@ -51,7 +52,7 @@ class View(tk.Tk):
 
     def open_login_window(self):
         self.login_window = tk.Toplevel(self)
-        #self.login_window.geometry("400x200")
+        self.login_window.geometry("450x150")
 
         # Login frame
         login_frame = tk.Frame(self.login_window)
@@ -61,8 +62,8 @@ class View(tk.Tk):
 
         # Quick login
         quick_login = tk.Frame(self.login_window)
-        tk.Button(quick_login, text="User", command=lambda: self.handle_login("jane.smith@example.com", "Aa444444")).pack()
-        tk.Button(quick_login, text="Admin", command=lambda: self.handle_login("john.doe@example.com", "Aa444444")).pack()
+        tk.Button(quick_login, text="User", command=lambda: self.handle_login("jane.smith@example.com", "Aa444444"), pady=5).pack()
+        tk.Button(quick_login, text="Admin", command=lambda: self.handle_login("john.doe@example.com", "Aa444444"), pady=5).pack()
 
         quick_login.place(x=10, y=10)
 
@@ -87,7 +88,7 @@ class View(tk.Tk):
 
         # # === DEBUG ===
         # # Quick login
-        self.handle_login("john.doe@example.com", "Aa444444")
+        #self.handle_login("john.doe@example.com", "Aa444444")
 
     def handle_login(self, email, password):
         if self.controller.login(email, password):
@@ -101,14 +102,14 @@ class View(tk.Tk):
             if logged_user.role == "ADMIN":
                 self.admin_logged()
 
-            self.controller.open_page("tasks")
+            self.controller.open_page("board")
 
         else:
             tk.messagebox.showwarning("Error", "Can not login")
 
     def admin_logged(self):
         self.menu_buttons["account"].set_bg("yellow")
-        self.menu_buttons["categories"].configure(state="normal")
+        self.menu_buttons["admin"].pack(side="left")
 
     def remove_current_page(self):
         """
@@ -131,8 +132,6 @@ class View(tk.Tk):
 
         self.current_view = page
         self.current_view.pack(fill="both", expand=True, padx=10, pady=10)
-
-        self.menu_buttons["account"].set_bg("orange")
 
     def open_task(self):
         top_window = tk.Toplevel(self)

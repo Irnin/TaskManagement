@@ -58,12 +58,22 @@ class TaskSubpage(tk.Frame):
 		action_frame = tk.Frame(self)
 		action_frame.grid(row=0, column=2, sticky="ns")
 
+		# Assigne Button for all users if task is not assigned
 		if not self.controller.task['assigned']:
 			IconButton(action_frame, iconName="assign.png", text="Assign Task", command=self.controller.assign_task).pack(side='top', fill='x')
 
+		if not self.controller.task['finished'] and self.controller.task['myTask']:
+			IconButton(action_frame, iconName="finish.png", text="Finish Task", command=self.controller.finish_task).pack(side='top', fill='x')
+
+		# Grand Achievement Button if task is finished
+		if self.controller.task['finished']:
+			IconButton(action_frame, iconName="assign.png", text="Grand Achievement", command=self.grant_achievement).pack(side='top', fill='x')
+
+		# Rate Task Button if task is finished and not rated for admin
 		if self.is_admin and self.controller.task['finished'] and not self.controller.task['rate']:
 			IconButton(action_frame, iconName="assign.png", text="Rate Task", command=self.rate_task).pack(side='top', fill='x')
 
+		# Delete Task Button for admin
 		if self.is_admin:
 			IconButton(action_frame, iconName="delete.png", text="Delete Task", command=self.confirm_delete_task).pack(side='bottom', fill='x')
 
@@ -87,3 +97,6 @@ class TaskSubpage(tk.Frame):
 		tk.Label(frame, text="Provide rate 1-5", font=("Helvetica", 16)).pack(fill='x')
 		tk.Scale(frame, from_=1, to=5, orient='horizontal', variable=rate).pack(fill='x')
 		tk.Button(frame, text="Rate", command=lambda: self.controller.rate_task(rate.get())).pack(fill='x')
+
+	def grant_achievement(self):
+		pass

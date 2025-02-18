@@ -32,3 +32,6 @@ class BoardController:
 		self.model.finish_task(task_id)
 
 		self.view.table.load_data()
+
+	def update_subpage(self, view):
+		self.view.load_subpage(view)

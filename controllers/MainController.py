@@ -30,14 +30,13 @@ class Controller:
 			self.task_controller = TasksController(self)
 			self.view.open_page(self.task_controller.view, page)
 
-		elif page == "categories":
-			category_controller = AdminController(self)
-			self.view.open_page(category_controller.view, page)
+		elif page == "admin":
+			admin_controller = AdminController(self)
+			self.view.open_page(admin_controller.view, page)
 
 		elif page == "account":
 			user_controller = UserController(self)
 			self.view.open_page(user_controller.view, page)
-
 
 	def login(self, email, password):
 		Logging.log_info(f"{email} tries to login")

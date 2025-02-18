@@ -7,13 +7,14 @@ class TaskController:
 
 	def __init__(self, root: tk.Frame, master_controller, taskId: int, is_admin: bool):
 		self.model = TaskModel(master_controller.masterModel)
+		self.master_controller = master_controller
 
 		self.taskId = taskId
 		self.get_task_details()
+		self.is_admin = is_admin
+		self.root = root
 
 		self.view = TaskSubpage(root, self, is_admin)
-
-		self.master_controller = master_controller
 
 	def delete_task(self):
 		Logging.log_info(f"Deleting task with id {self.taskId}")
@@ -25,10 +26,9 @@ class TaskController:
 	def get_task_details(self):
 		self.task = self.model.get_task(self.taskId).json()
 
-		print(self.task)
-
 		self.is_assigned()
 		self.has_review()
+		self.is_my_task()
 
 	def is_assigned(self):
 		""" Check if the task is assigned to a user """
@@ -66,8 +66,38 @@ class TaskController:
 		except Exception as e:
 			Logging.log_info(f"Failed to get assigned user: {e}")
 
+	def is_my_task(self):
+		self.task['myTask'] = False
+
+		my_id = self.master_controller.masterModel.get_user_id()
+		task_assigned_user = self.task.get('assigned_user', {}).get('idUser', -1)
+
+		if my_id == task_assigned_user:
+			self.task['myTask'] = True
+
+	# Actions
 	def assign_task(self):
 		self.master_controller.assign_task(self.taskId)
 
+		self.reset_view()
+
 	def rate_task(self, rate: int):
 		self.master_controller.rate_task(self.taskId, rate)
+
+		self.reset_view()
+
+	def finish_task(self):
+		self.model.finish_task(self.taskId)
+
+		self.reset_view()
+
+	def reset_view(self):
+		self.get_task_details()
+
+		for widget in self.view.winfo_children():
+			widget.destroy()
+
+		self.view.destroy()
+
+		self.view = TaskSubpage(self.root, self, self.is_admin)
+		self.master_controller.update_subpage(self.view)

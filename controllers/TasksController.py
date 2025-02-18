@@ -26,6 +26,9 @@ class TasksController:
 
         self.view.load_subpage(task_controller.view)
 
+    def update_subpage(self, view):
+        self.view.load_subpage(view)
+
     def open_task_with_id(self, task_id):
         try:
             task = self.model.get_task(task_id)
@@ -68,3 +71,6 @@ class TasksController:
 
     def rate_task(self, task_id, rate):
         self.model.rate_task(task_id, rate)
+
+    def finish_task(self, task_id: int):
+        self.model.finish_task(task_id)

@@ -61,3 +61,9 @@ class TaskModel:
 			endpoint=f"/api/task/{taskId}/rate",
 			method="GET"
 		)
+
+	def finish_task(self, task_id):
+		self.masterModel.send_request(
+			endpoint=f"/api/tasks/complete/{task_id}",
+			method="PATCH"
+		)
