@@ -50,9 +50,8 @@ class TasksController:
     def create_task(self, title, description, category_id, task_score, due_date):
         self.model.create_task(title, description, category_id, task_score, due_date)
 
-    def select_category(self, tk_id, tk_name):
-        category_controller = AdminController(self.masterController)
-        category_controller.view.select_category(tk_id, tk_name)
+    def fetch_categories(self, page: int = 0, page_size: int = 25):
+        return self.model.get_categories(page=page, page_size=page_size)
 
     def delete_task(self, task_id):
         Logging.log_info(f"Deleting task with id {task_id}")

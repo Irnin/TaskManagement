@@ -1,3 +1,8 @@
+import requests
+
+from utility.logging import Logging
+
+
 class TaskModel:
 	def __init__(self, masterModel):
 		self.masterModel = masterModel
@@ -67,3 +72,17 @@ class TaskModel:
 			endpoint=f"/api/tasks/complete/{task_id}",
 			method="PATCH"
 		)
+
+	def get_categories(self, page: int = 0, page_size: int = 25):
+		""" Fetch data from the database and store it in self.data """
+		try:
+			response = self.masterModel.send_request(
+				endpoint="/api/categories",
+				method="GET",
+				params={"page": page, "size": page_size})
+
+			response.raise_for_status()
+			return response
+
+		except requests.RequestException as e:
+			Logging.log_error(f"Request failed: {e}")

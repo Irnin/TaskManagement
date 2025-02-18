@@ -10,6 +10,9 @@ from views.modules.IconButton import IconButton
 
 from tkcalendar import Calendar, DateEntry
 
+from views.modules.PageFrame import PageFrame
+
+
 class TaskCreateSubpage(tk.Frame):
 
 	def __init__(self, parent, controller, is_admin: bool):
@@ -86,7 +89,7 @@ class TaskCreateSubpage(tk.Frame):
 
 		# Category
 		tk.Label(right_panel, text="Category:", anchor="w").pack(side=tk.TOP, fill=tk.X)
-		tk.Button(right_panel, textvariable=self.tkv_category_name, command=lambda: self.controller.select_category(self.tkv_category_id, self.tkv_category_name)).pack(side=tk.TOP, fill=tk.X)
+		tk.Button(right_panel, textvariable=self.tkv_category_name, command= self.select_category).pack(side=tk.TOP, fill=tk.X)
 
 		# Task score
 		tk.Label(right_panel, text="Task score:", anchor="w").pack(side=tk.TOP, fill=tk.X)
@@ -127,6 +130,27 @@ class TaskCreateSubpage(tk.Frame):
 	def _update_due_date(self):
 		date = self.calendar.get_date()
 		self.tkv_due_date.set(date)
+
+	def select_category(self):
+		self.select_category_window = tk.Toplevel(self)
+
+		self.select_category_window.title("Select Category")
+
+		self.table = PageFrame(self.select_category_window, self.controller.fetch_categories, self.return_selected_category)
+		self.table.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+		columns = [{'column_name': 'idCat', 'column_label': 'ID', 'visible': False},
+		           {'column_name': 'name', 'column_label': 'Name', 'visible': True},
+		           {'column_name': 'description', 'column_label': 'Description', 'visible': True}]
+
+		self.table.configure_columns(columns)
+		self.table.load_data()
+
+	def return_selected_category(self, category):
+		self.select_category_window.destroy()
+
+		self.tkv_category_id.set(category['idCat'])
+		self.tkv_category_name.set(category['name'])
 
 	def _create_task(self):
 		title = self.tkv_title.get()
