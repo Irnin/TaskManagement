@@ -88,7 +88,7 @@ class View(tk.Tk):
 
         # # === DEBUG ===
         # # Quick login
-        self.handle_login("john.doe@example.com", "Aa444444")
+        #self.handle_login("john.doe@example.com", "Aa444444")
 
     def handle_login(self, email, password):
         if self.controller.login(email, password):

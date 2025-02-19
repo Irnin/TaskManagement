@@ -1,3 +1,4 @@
+import bcrypt
 import requests
 
 from utility.logging import Logging
@@ -68,11 +69,15 @@ class CategoryModel:
 		)
 
 	def create_user(self, email, first_name, last_name, password):
-		return self.masterModel.send_request(
+		hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+		response = self.masterModel.send_request(
 			endpoint="/api/users/add",
 			method="PUT",
-			data={"firstName": first_name, "lastName": last_name, "email": email, "password": password, "role": 1}
+			data={"firstName": first_name, "lastName": last_name, "email": email, "password": hashed_password, "role": 1}
 		)
+
+
 
 	def update_role(self, user_id, role_id):
 		return self.masterModel.send_request(
