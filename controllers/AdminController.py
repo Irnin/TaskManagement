@@ -50,11 +50,7 @@ class AdminController:
 		return self.model.get_admin_jobs(page=page, page_size=page_size)
 
 	def open_task(self, task):
-		task_controller = TaskController(self.view, self, task['idTask'], self.masterModel.is_admin())
-
-		self.view.update_header(f"Task [{task['idTask']}] - {task['title']}")
-
-		self.view.load_subpage(task_controller.view)
+		self.masterController.open_task(task['idTask'])
 
 	def open_category(self):
 		self.category_view = CategorySubpage(self.view, self)
@@ -65,6 +61,9 @@ class AdminController:
 		self.users_view = UsersSubpage(self.view, self)
 		self.view.update_header("Users")
 		self.view.load_subpage(self.users_view)
+
+	def update_subpage(self, view):
+		self.view.load_subpage(view)
 
 	def create_user(self, email, first_name, last_name, password):
 		if not email.strip() or not first_name.strip() or not last_name.strip() or not password.strip():

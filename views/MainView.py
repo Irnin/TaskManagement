@@ -71,9 +71,9 @@ class View(tk.Tk):
         login_frame.columnconfigure((0, 1), weight=1)
         login_frame.rowconfigure((0, 1, 2), weight=1)
 
-        tk.Label(login_frame, text="Login:").grid(column=0, row=0, columnspan=2)
-        tk.Label(login_frame, text="Email").grid(column=0, row=1)
-        tk.Label(login_frame, text="Password").grid(column=0, row=2)
+        tk.Label(login_frame, text="Email", pady=20).grid(column=0, row=1)
+        tk.Label(login_frame, text="Password", pady=20).grid(column=0, row=2)
+        tk.Label(login_frame, text="", pady=10).grid(column=0, row=3)
 
         email_entry = ttk.Entry(login_frame, textvariable=email)
         email_entry.grid(column=1, row=1)
