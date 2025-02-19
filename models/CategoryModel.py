@@ -52,3 +52,10 @@ class CategoryModel:
 			method="GET",
 			params={"page": page, "size": page_size}
 		)
+
+	def create_category(self, name, description):
+		return self.masterModel.send_request(
+			endpoint="/api/categories",
+			method="POST",
+			data={"name": name, "description": description}
+		)

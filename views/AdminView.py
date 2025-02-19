@@ -45,4 +45,8 @@ class AdminView(Panel):
         self.table.configure_columns(columns)
         self.table.load_data()
 
+        # Action Buttons
+        category_button = IconButton(action_frame, "tasks.png", "Categories", self.controller.open_category)
+        category_button.pack(side=tk.TOP, fill=tk.X)
+
 

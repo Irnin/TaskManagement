@@ -62,8 +62,6 @@ class TasksController:
     def assign_task(self, task_id):
         user_id = self.masterModel.user.id
         task_id = int(task_id)
-        print(type(user_id))
-        print(type(task_id))
         self.model.assign_task(task_id, user_id)
 
         self.reload_data()

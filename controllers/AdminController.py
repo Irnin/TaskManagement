@@ -1,6 +1,8 @@
 from controllers.TaskController import TaskController
 from models.CategoryModel import CategoryModel
 from views.AdminView import AdminView
+from views.CategorySubpage import CategorySubpage
+
 
 class AdminController:
 	def __init__(self, controller):
@@ -21,6 +23,16 @@ class AdminController:
 		categories = self.model.get_categories()
 		self.view.insert_categories(categories)
 
+	def create_category(self, name, description):
+
+		if not name.strip() or not description.strip():
+			return
+
+		self.model.create_category(name, description)
+		self.category_view.table.reload_data()
+		self.category_view.destroy_create_category_window()
+
+
 	def select_category(self, category):
 
 		self.place_for_category = category
@@ -39,3 +51,8 @@ class AdminController:
 		self.view.update_header(f"Task [{task['idTask']}] - {task['title']}")
 
 		self.view.load_subpage(task_controller.view)
+
+	def open_category(self):
+		self.category_view = CategorySubpage(self.view, self)
+		self.view.update_header("Categories")
+		self.view.load_subpage(self.category_view)
