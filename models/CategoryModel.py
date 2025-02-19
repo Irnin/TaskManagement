@@ -59,3 +59,17 @@ class CategoryModel:
 			method="POST",
 			data={"name": name, "description": description}
 		)
+
+	def get_users(self, page, page_size):
+		return self.masterModel.send_request(
+			endpoint="/api/users/",
+			method="GET",
+			params={"page": page, "size": page_size}
+		)
+
+	def create_user(self, email, first_name, last_name, password):
+		return self.masterModel.send_request(
+			endpoint="/api/users/add",
+			method="PUT",
+			data={"firstName": first_name, "lastName": last_name, "email": email, "password": password, "role": 1}
+		)

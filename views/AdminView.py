@@ -1,4 +1,5 @@
 import tkinter as tk
+from errno import EUSERS
 from tkinter import ttk
 
 from views.modules.BetterText import BetterText
@@ -48,5 +49,8 @@ class AdminView(Panel):
         # Action Buttons
         category_button = IconButton(action_frame, "tasks.png", "Categories", self.controller.open_category)
         category_button.pack(side=tk.TOP, fill=tk.X)
+
+        users_button = IconButton(action_frame, "admin.png", "Users", self.controller.open_users)
+        users_button.pack(side=tk.TOP, fill=tk.X)
 
 

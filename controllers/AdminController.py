@@ -2,6 +2,7 @@ from controllers.TaskController import TaskController
 from models.CategoryModel import CategoryModel
 from views.AdminView import AdminView
 from views.CategorySubpage import CategorySubpage
+from views.UsersSubpage import UsersSubpage
 
 
 class AdminController:
@@ -15,6 +16,10 @@ class AdminController:
 
 	def fetch_categories(self, page: int = 0, page_size: int = 25):
 		return self.model.get_categories(page=page, page_size=page_size)
+
+	def fetch_users(self, page: int = 0, page_size: int = 25):
+		print(self.model.get_users(page=page, page_size=page_size))
+		return self.model.get_users(page=page, page_size=page_size)
 
 	def update_category(self, id, name, description):
 		self.model.update_category(id, name, description)
@@ -34,7 +39,6 @@ class AdminController:
 
 
 	def select_category(self, category):
-
 		self.place_for_category = category
 		self.view.select_category()
 
@@ -56,3 +60,16 @@ class AdminController:
 		self.category_view = CategorySubpage(self.view, self)
 		self.view.update_header("Categories")
 		self.view.load_subpage(self.category_view)
+
+	def open_users(self):
+		self.users_view = UsersSubpage(self.view, self)
+		self.view.update_header("Users")
+		self.view.load_subpage(self.users_view)
+
+	def create_user(self, email, first_name, last_name, password):
+		if not email.strip() or not first_name.strip() or not last_name.strip() or not password.strip():
+			return
+
+		self.model.create_user(email, first_name, last_name, password)
+		self.users_view.table.reload_data()
+		self.users_view.destroy_create_user_window()
