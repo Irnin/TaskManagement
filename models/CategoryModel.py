@@ -73,3 +73,9 @@ class CategoryModel:
 			method="PUT",
 			data={"firstName": first_name, "lastName": last_name, "email": email, "password": password, "role": 1}
 		)
+
+	def update_role(self, user_id, role_id):
+		return self.masterModel.send_request(
+			endpoint=f"/api/users/user/{user_id}/role/{role_id}",
+			method="PATCH"
+		)

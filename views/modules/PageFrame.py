@@ -121,6 +121,8 @@ class PageFrame(tk.Frame):
 	def selected_method(self, event):
 		self.selected_method(self.get_selected_item())
 
+
+
 class ControlPanel(tk.Frame):
 	def __init__(self, root, reload_data=None):
 		self.root = root

@@ -2,6 +2,7 @@ import secrets
 import string
 import tkinter as tk
 from random import random
+from tkinter import messagebox
 
 from views.modules.IconButton import IconButton
 from views.modules.PageFrame import PageFrame
@@ -46,6 +47,12 @@ class UsersSubpage(tk.Frame):
 		category_button = IconButton(action_frame, "tasks.png", "Create user", self.create_user)
 		category_button.pack(side=tk.TOP, fill=tk.X)
 
+		grant_admin_role = IconButton(action_frame, "tasks.png", "Grant admin role", self.grant_admin_role)
+		grant_admin_role.pack(side=tk.TOP, fill=tk.X)
+
+		grant_employee_role = IconButton(action_frame, "tasks.png", "Grant employee role", self.grant_employee_role)
+		grant_employee_role.pack(side=tk.TOP, fill=tk.X)
+
 	def generate_simple_password(self):
 		characters = string.ascii_letters + string.digits
 		return ''.join(secrets.choice(characters) for _ in range(12))
@@ -82,3 +89,19 @@ class UsersSubpage(tk.Frame):
 
 	def destroy_create_user_window(self):
 		self.create_user_window.destroy()
+
+	def grant_admin_role(self):
+		user = self.table.get_selected_item()
+		if user:
+			self.controller.grant_admin_role(user['idUser'])
+
+		else:
+			messagebox.showinfo("Error", "No user selected")
+
+	def grant_employee_role(self):
+		user = self.table.get_selected_item()
+		if user:
+			self.controller.grant_employee_role(user['idUser'])
+
+		else:
+			messagebox.showinfo("Error", "No user selected")

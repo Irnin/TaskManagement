@@ -73,3 +73,11 @@ class AdminController:
 		self.model.create_user(email, first_name, last_name, password)
 		self.users_view.table.reload_data()
 		self.users_view.destroy_create_user_window()
+
+	def grant_admin_role(self, user_id):
+		self.model.update_role(user_id, 0)
+		self.users_view.table.reload_data()
+
+	def grant_employee_role(self, user_id):
+		self.model.update_role(user_id, 1)
+		self.users_view.table.reload_data()
