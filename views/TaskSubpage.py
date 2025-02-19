@@ -18,8 +18,10 @@ class TaskSubpage(tk.Frame):
 
 	def setup_ui(self):
 		self.columnconfigure(0, weight=1)
-		self.columnconfigure(1, weight=1)
-		self.columnconfigure(2, weight=0)
+		self.columnconfigure(1, weight=0)
+		self.columnconfigure(2, weight=1)
+		self.columnconfigure(3, weight=0)
+		self.columnconfigure(4, weight=0)
 		self.rowconfigure(0, weight=1)
 
 		details_frame = tk.Frame(self)
@@ -28,7 +30,7 @@ class TaskSubpage(tk.Frame):
 
 		tkv_desctiption = tk.StringVar()
 		tkv_desctiption.set(self.controller.task["description"])
-		BetterText(details_frame, textvariable=tkv_desctiption).pack(fill='both', expand=True)
+		tk.Label(details_frame, textvariable=tkv_desctiption, anchor='nw').pack(fill='both', expand=True)
 
 		tk.Label(details_frame, text="Category: " + self.controller.task["category"]['name'], anchor='w').pack(fill='x')
 		tk.Label(details_frame, text="Created: " + self.controller.task['taskCreated'], anchor='w').pack(fill='x')
@@ -36,8 +38,9 @@ class TaskSubpage(tk.Frame):
 		tk.Label(details_frame, text="Score: " + str(self.controller.task['taskScore']), anchor='w').pack(fill='x')
 
 		# Workflow
+		ttk.Separator(self, orient='vertical').grid(row=0, column=1, sticky="ns")
 		task_workflow_frame = tk.Frame(self, padx=10)
-		task_workflow_frame.grid(row=0, column=1, sticky="nswe")
+		task_workflow_frame.grid(row=0, column=2, sticky="nswe")
 
 		if self.controller.task['assigned']:
 			tk.Label(task_workflow_frame, text="Assigned to: " + self.controller.task['assigned_user']['firstName'] + " " + self.controller.task['assigned_user']['lastName'], anchor='w').pack(fill='x')
@@ -66,8 +69,9 @@ class TaskSubpage(tk.Frame):
 				self.achievement_widget(achivements_frame.scrollable_frame, achivement).pack(fill='x')
 
 		# Action
-		action_frame = tk.Frame(self)
-		action_frame.grid(row=0, column=2, sticky="ns")
+		ttk.Separator(self, orient='vertical').grid(row=0, column=3, sticky="ns")
+		action_frame = tk.Frame(self, padx=10)
+		action_frame.grid(row=0, column=4, sticky="ns")
 
 		# Assigne Button for all users if task is not assigned
 		if not self.controller.task['assigned']:
@@ -126,6 +130,7 @@ class TaskSubpage(tk.Frame):
 		tk.Label(frame, text="Title").grid(row=0, column=0, sticky='nsew')
 		tk.Entry(frame, textvariable=tkv_title).grid(row=0, column=1, sticky='nsew')
 
+		tk.Label(frame, text="Description").grid(row=1, column=0, sticky='nsew')
 		tk.Label(frame, text="Description").grid(row=1, column=0, sticky='nsew')
 		BetterText(frame, textvariable=tkv_description).grid(row=1, column=1, sticky='nsew')
 
