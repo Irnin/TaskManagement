@@ -44,7 +44,7 @@ class UsersSubpage(tk.Frame):
 		self.table.load_data()
 
 		# Action Buttons
-		category_button = IconButton(action_frame, "tasks.png", "Create user", self.create_user)
+		category_button = IconButton(action_frame, "adminAdd.png", "Create user", self.create_user)
 		category_button.pack(side=tk.TOP, fill=tk.X)
 
 		grant_admin_role = IconButton(action_frame, "tasks.png", "Grant admin role", self.grant_admin_role)

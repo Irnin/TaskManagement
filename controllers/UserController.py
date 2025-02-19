@@ -16,5 +16,17 @@ class UserController:
 
 		self.is_admin = self.masterModel.is_admin()
 
-	def test_method(self):
-		print("test method")
+	def change_password(self, current_password, new_password, confirm_password):
+		if not current_password.strip():
+			return
+
+		if not new_password.strip():
+			return
+
+		if not confirm_password.strip():
+			return
+
+		if new_password != confirm_password:
+			return
+
+		self.model.change_password(current_password, new_password)
