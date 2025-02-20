@@ -178,21 +178,24 @@ class TaskSubpage(tk.Frame):
 		self.controller.reset_view()
 
 	def achievement_widget(self, root, achievement):
-		frame = tk.Frame(root)
+		frame = tk.Frame(root, padx=10)
 
 		frame.columnconfigure((0, 1), weight=1)
 		frame.rowconfigure((0, 1, 2, 3), weight=1)
 
 		tk.Label(frame, text=achievement['title'], anchor='w').grid(row=0, column=0, sticky='nsew')
-		tk.Label(frame, text=achievement['description'], anchor='w').grid(row=1, column=0, sticky='nsew')
+		tk.Label(frame, text=achievement['description'], wraplength=300, anchor='w').grid(row=1, column=0, sticky='nsew')
 		tk.Label(frame, text="Score: " + str(achievement['valueScore']), anchor='w').grid(row=2, column=0, sticky='nsew')
 
 		if achievement['confirmedBy'] is None:
 			tk.Label(frame, text="Pending", anchor='w').grid(row=0, column=1, sticky='nsew')
 
 			if self.is_admin:
-				tk.Button(frame, text="Confirm", command= lambda: self.controller.confirm_achievement(achievement['idAchiev'])).grid(row=1, column=1, sticky='nsew')
-				tk.Button(frame, text="Reject", command= lambda:self.controller.reject_achievement(achievement['idAchiev'])).grid(row=2, column=1, sticky='nsew')
+				buttons_frame = tk.Frame(frame)
+				buttons_frame.grid(row=1, column=1, rowspan=2, sticky='nsew')
+
+				tk.Button(buttons_frame, text="Confirm", command= lambda: self.controller.confirm_achievement(achievement['idAchiev'])).pack(fill='x')
+				tk.Button(buttons_frame, text="Reject", command= lambda:self.controller.reject_achievement(achievement['idAchiev'])).pack(fill='x')
 
 		ttk.Separator(frame, orient='horizontal').grid(row=3, column=0, columnspan=2, sticky='ew')
 

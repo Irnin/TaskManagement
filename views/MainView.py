@@ -61,11 +61,11 @@ class View(tk.Tk):
         password = tk.StringVar()
 
         # Quick login
-        quick_login = tk.Frame(self.login_window)
-        tk.Button(quick_login, text="User", command=lambda: self.handle_login("jane.smith@example.com", "Aa444444"), pady=5).pack()
-        tk.Button(quick_login, text="Admin", command=lambda: self.handle_login("john.doe@example.com", "Aa444444"), pady=5).pack()
-
-        quick_login.place(x=10, y=10)
+        # quick_login = tk.Frame(self.login_window)
+        # tk.Button(quick_login, text="User", command=lambda: self.handle_login("jane.smith@example.com", "Aa444444"), pady=5).pack()
+        # tk.Button(quick_login, text="Admin", command=lambda: self.handle_login("john.doe@example.com", "Aa444444"), pady=5).pack()
+		#
+        # quick_login.place(x=10, y=10)
 
         # Common login
         login_frame.columnconfigure((0, 1), weight=1)
@@ -88,7 +88,7 @@ class View(tk.Tk):
 
         # # === DEBUG ===
         # # Quick login
-        #self.handle_login("john.doe@example.com", "Aa444444")
+        self.handle_login("andrzej@perun.com", "Aa444444")
 
     def handle_login(self, email, password):
         if self.controller.login(email, password):
