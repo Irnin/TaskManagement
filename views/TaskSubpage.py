@@ -77,6 +77,9 @@ class TaskSubpage(tk.Frame):
 		if not self.controller.task['assigned']:
 			IconButton(action_frame, iconName="assign.png", text="Assign Task", command=self.controller.assign_task).pack(side='top', fill='x')
 
+		if self.is_admin and not self.controller.task['assigned']:
+			IconButton(action_frame, iconName="assign.png", text="Find users", command=self.find_users).pack(side='top', fill='x')
+
 		if not self.controller.task['finished'] and self.controller.task['myTask']:
 			IconButton(action_frame, iconName="finish.png", text="Finish Task", command=self.controller.finish_task).pack(side='top', fill='x')
 
@@ -99,6 +102,38 @@ class TaskSubpage(tk.Frame):
 
 		self.controller.delete_task()
 
+	def find_users(self):
+		window = tk.Toplevel(self)
+
+		frame = tk.Frame(window)
+		frame.pack(fill='both', expand=True, padx=10, pady=10)
+
+		users = self.controller.find_users()
+
+		print(users)
+
+		for user in users:
+			user_frame = tk.Frame(frame)
+			user_frame.pack(fill='x')
+
+			user_frame.columnconfigure(0, weight=1)
+			user_frame.columnconfigure(1, weight=0)
+			user_frame.rowconfigure(0, weight=1)
+			user_frame.rowconfigure(1, weight=0)
+
+			#Details
+			details_frame = tk.Frame(user_frame)
+			details_frame.grid(row=0, column=0, sticky='nsew')
+
+			tk.Label(details_frame, text=user[1] + " " + user[2], anchor='w').pack(fill='x')
+			tk.Label(details_frame, text="Score: " + str(user[3]), anchor='w').pack(fill='x')
+			tk.Label(details_frame, text="Active Task: " + str(user[4]), anchor='w').pack(fill='x')
+
+			# Assign Button
+			tk.Button(user_frame, text="Assign", command=lambda user_id=user[0] : self.controller.assign_task_to_user(user_id)).grid(row=0, column=1, sticky='nsew')
+
+			ttk.Separator(user_frame, orient='horizontal').grid(row=1, column=0, columnspan=2, sticky='ew')
+
 	def rate_task(self):
 		rate_task_window = tk.Toplevel(self)
 		rate_task_window.title("Rate Task")
@@ -109,7 +144,6 @@ class TaskSubpage(tk.Frame):
 		rate = tk.IntVar()
 		rate.set(3)
 
-		tk.Label(frame, text="Provide rate 1-5", font=("Helvetica", 16)).pack(fill='x')
 		tk.Scale(frame, from_=1, to=5, orient='horizontal', variable=rate).pack(fill='x')
 		tk.Button(frame, text="Rate", command=lambda: self.controller.rate_task(rate.get())).pack(fill='x')
 
@@ -135,7 +169,7 @@ class TaskSubpage(tk.Frame):
 		BetterText(frame, textvariable=tkv_description).grid(row=1, column=1, sticky='nsew')
 
 		tk.Label(frame, text="Score").grid(row=2, column=0, sticky='nsew')
-		tk.Scale(frame, from_=1, to=5, orient='horizontal', variable=tkv_score).grid(row=2, column=1, sticky='nsew')
+		tk.Scale(frame, from_=5, to=7, orient='horizontal', variable=tkv_score).grid(row=2, column=1, sticky='nsew')
 
 		tk.Button(frame, text="Grant", command=lambda: self.controller.grant_achievement(tkv_title.get(), tkv_description.get(), tkv_score.get())).grid(row=3, column=0, columnspan=2, sticky='nsew')
 

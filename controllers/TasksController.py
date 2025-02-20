@@ -2,6 +2,7 @@ from controllers.AdminController import AdminController
 from controllers.TaskController import TaskController
 from models.TaskModel import TaskModel
 from utility.logging import Logging
+from views.Archive import Archive
 from views.TasksView import TasksView
 from views.taskCreateSubpage import TaskCreateSubpage
 
@@ -20,6 +21,9 @@ class TasksController:
         return self.model.fetch_unassigned_tasks(page, page_size)
 
     def open_task(self, task):
+        if hasattr(self, 'archive_view') and self.archive_view is not None:
+            self.archive_view.destroy()
+
         task_controller = TaskController(self.view, self, task['idTask'], self.masterModel.is_admin())
 
         self.view.update_header(f"Task [{task['idTask']}] - {task['title']}")
@@ -47,11 +51,21 @@ class TasksController:
 
         self.view.load_subpage(create_task_view)
 
+    def open_archive(self):
+        self.view.update_header("Archive")
+
+        self.archive_view = Archive(self.view, self)
+
+        self.view.load_subpage(self.archive_view)
+
     def create_task(self, title, description, category_id, task_score, due_date):
         self.model.create_task(title, description, category_id, task_score, due_date)
 
     def fetch_categories(self, page: int = 0, page_size: int = 25):
         return self.model.get_categories(page=page, page_size=page_size)
+
+    def fetch_finished_tasks(self, page: int, page_size: int):
+        return self.model.fetch_finished_tasks(page, page_size)
 
     def delete_task(self, task_id):
         Logging.log_info(f"Deleting task with id {task_id}")

@@ -46,15 +46,18 @@ class TasksView(Panel):
 
         # Configure the buttons
         create_task_button = IconButton(action_frame, "add.png", "Create task", lambda: self.controller.open_create_task())
-        create_task_button.pack(side=tk.TOP)
+        create_task_button.pack(side=tk.TOP, fill=tk.X)
+
+        archive_tasks_button = IconButton(action_frame, "archive.png", "Archive tasks", lambda: self.controller.open_archive())
+        archive_tasks_button.pack(side=tk.TOP, fill=tk.X)
 
         self.assign_task_button = IconButton(action_frame, "assign.png", "Assign task", lambda: self.controller.assign_task(self.selected_task['idTask']))
-        self.assign_task_button.pack(side=tk.TOP)
+        self.assign_task_button.pack(side=tk.TOP, fill=tk.X)
         self.assign_task_button.configure(state=tk.DISABLED)
 
         if self.controller.masterModel.is_admin():
             self.delete_task_button = IconButton(action_frame, "delete.png", "Delete task", lambda: self.controller.delete_task(self.selected_task['idTask']))
-            self.delete_task_button.pack(side=tk.BOTTOM)
+            self.delete_task_button.pack(side=tk.BOTTOM, fill=tk.X)
             self.delete_task_button.configure(state=tk.DISABLED)
 
     def task_selected(self, task):

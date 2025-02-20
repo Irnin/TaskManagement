@@ -118,3 +118,21 @@ class TaskModel:
 			endpoint=f"api/achievements/{achievementId}",
 			method="DELETE"
 		)
+
+	def fetch_finished_tasks(self, page, page_size):
+		return self.masterModel.send_request(
+			endpoint=f"api/tasks/finished",
+			method="GET"
+		)
+
+	def find_users_for_task(self, task_id):
+		return self.masterModel.send_request(
+			endpoint=f"api/tasks/findUsersForTask/{task_id}",
+			method="GET"
+		)
+
+	def assign_task_to_user(self, taskId, userId):
+		return self.masterModel.send_request(
+			endpoint=f"api/tasks/assigne/{taskId}/to/{userId}",
+			method="PATCH"
+		)

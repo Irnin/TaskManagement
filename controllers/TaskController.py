@@ -140,3 +140,18 @@ class TaskController:
 		self.model.reject_achievement(achievementId)
 
 		self.reset_view()
+
+	def json_to_table(self, json_data):
+		return [[entry['user']['idUser'], entry['user']['firstName'], entry['user']['lastName'], entry['score'], entry['assignedActiveTask']] for entry in json_data]
+
+	def find_users(self):
+		users = self.model.find_users_for_task(self.taskId)
+
+		table = self.json_to_table(users.json())
+
+		return table
+
+	def assign_task_to_user(self, userId):
+		self.model.assign_task_to_user(self.taskId, userId)
+
+		self.reset_view()
